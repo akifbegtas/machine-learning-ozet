@@ -96,6 +96,15 @@
   .prof .lbl{font-weight:800;color:#b45309;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:3px}
   .trap{background:var(--red-bg);border-color:#f3c4c4;border-left:5px solid var(--red)}
   .trap .lbl{font-weight:800;color:var(--red);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:3px}
+  /* TEACH (Sıfırdan Anlatım) */
+  .teach{background:linear-gradient(135deg,#fffdf6,#fff6e8);border:1px solid #f0e2c4;border-left:5px solid #e0992a;border-radius:14px;padding:4px 20px 16px;margin:14px 0}
+  .teach .tlabel{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(135deg,#d98a1f,#f3b042);color:#fff;font-weight:700;font-size:.8rem;padding:6px 14px;border-radius:0 0 12px 12px;margin-left:-6px}
+  .teach p{font-size:.96rem}
+  .teach h4.mini{color:#9a5b00;margin-top:15px}
+  .analogy{background:#eaf3ff;border-left:4px solid var(--primary2);border-radius:8px;padding:9px 14px;margin:11px 0;font-size:.94rem}
+  .analogy b{color:var(--primary)}
+  .tldr{background:var(--green-bg);border:1px solid #bfe9cd;border-radius:9px;padding:9px 14px;margin:12px 0 4px;font-size:.94rem}
+  .tldr b{color:#15803d}
 
   /* TABLE */
   .tbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:.88rem;overflow:hidden;border-radius:10px}
@@ -204,6 +213,19 @@
   <div class="week-body">
     <div class="tags"><span>Makine Öğrenmesi (ML)</span><span>Supervised</span><span>Unsupervised</span><span>Reinforcement</span><span>Problem-driven</span></div>
 
+    <h3 class="sec"><span class="ic">📖</span> Sıfırdan Anlatım</h3>
+    <div class="teach">
+      <span class="tlabel">🧑‍🏫 En baştan, sade</span>
+      <p>Normalde bir bilgisayara iş yaptırmak için ona <b>tek tek kural</b> yazarsın: "eğer sıcaklık 100'ü geçerse alarmı çaldır". Ama bazı işler o kadar karmaşıktır ki bütün kuralları elle yazamazsın. Bir fotoğraftaki hayvanın kedi mi köpek mi olduğunu anlatan kuralları yazmayı dene — imkânsız. İşte <b>makine öğrenmesi</b> tam burada devreye girer: kuralı sen yazmazsın, bilgisayara bir sürü <b>örnek (veri)</b> gösterirsin, o da örneklere bakıp kuralı <b>kendisi çıkarır</b>.</p>
+      <div class="analogy">🎯 <b>Günlük hayattan:</b> Çocuğa "kedi" diye tanım ezberletmezsin; ona bir sürü kedi gösterirsin, kafasında "kedi" kalıbı oluşur. Sonra hiç görmediği bir kediyi bile tanır. Makine de örneklerden tam böyle öğrenir.</div>
+      <p>Peki mühendis bunu neden ister? Çünkü gerçek sistemler (motorlar, sensörler, üretim hatları) çoğu zaman temiz denklemlerle tam anlatılamaz; gürültü ve belirsizlik vardır. "Elimde bir yığın ölçüm var, bundan sonucu tahmin et" dediğin yerde ML, fiziği <b>tamamlar</b> — yerine geçmez, aklını/yargını genişletir.</p>
+      <h4 class="mini">Üç tür öğrenmeyi günlük dille ayıralım</h4>
+      <p><b>1) Supervised (gözetimli) = cevap anahtarı var.</b> Elinde hem sorular hem doğru cevaplar var: "bu ev 120 m² → 3 milyon TL" gibi binlerce örnek. Model "girdi → çıktı" eşlemesini öğrenir, yeni ev gelince fiyatını söyler. İki çeşidi: sayı tahmini (<b>regression</b>, örn. fiyat) ve kategori tahmini (<b>classification</b>, örn. geçer/kalır).</p>
+      <p><b>2) Unsupervised (gözetimsiz) = cevap anahtarı yok.</b> Modele karışık bir yığın verip "bunları benzerliklerine göre kendin grupla" dersin. Mesela müşterileri davranışına göre kümelere ayırması. Doğru cevap önceden belli değildir; model gizli yapıyı keşfeder.</p>
+      <p><b>3) Reinforcement (pekiştirmeli) = deneme-yanılma + ödül/ceza.</b> Bisiklete binmeyi öğrenmek gibi: dengede kalınca "aferin" (ödül), düşünce "olmadı" (ceza). Model zamanla en çok ödül getiren davranışı öğrenir. Bu derste yalnızca kavramsal geçilir.</p>
+      <div class="tldr">✅ <b>Özetle:</b> ML = kuralı elle yazmak yerine bilgisayarın örneklerden kuralı kendi çıkarması. Cevap anahtarı varsa <b>supervised</b>, yoksa <b>unsupervised</b>, ödül peşinde deneme-yanılmaysa <b>reinforcement</b>.</div>
+    </div>
+
     <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
     <p class="lead"><b>Makine Öğrenmesi (Machine Learning, ML)</b>, sistemlerin <mark>açıkça programlanmadan</mark> verideki örüntüleri (patterns) öğrenip karar veya tahmin üretmesini sağlayan algoritmaların incelenmesidir. Mühendislik bakışıyla ML; karmaşık sistemleri modellemek için bir araçtır, fizik-tabanlı ve kural-tabanlı modelleri <b>tamamlar</b> (yerine geçmez).</p>
 
@@ -311,6 +333,21 @@
   </div>
   <div class="week-body">
     <div class="tags"><span>AI ⊃ ML ⊃ DL</span><span>ŷ = f̂(x;θ)</span><span>6 Bileşen</span><span>13 Adım</span><span>Overfitting</span><span>Hyperparameter</span></div>
+
+    <h3 class="sec"><span class="ic">📖</span> Sıfırdan Anlatım</h3>
+    <div class="teach">
+      <span class="tlabel">🧑‍🏫 En baştan, sade</span>
+      <p><b>AI, ML, DL</b> sürekli karışır — aslında iç içe halkalar. <b>Yapay Zekâ (AI)</b> en geniş şemsiye: "akıllıymış gibi" davranan her sistem. İçinde veriden öğrenmeyenler de var (mesela kurallarla satranç oynayan klasik program). <b>Makine Öğrenmesi (ML)</b> bunun <b>veriden öğrenen</b> alt kümesi. <b>Derin Öğrenme (DL)</b> ise ML'in, çok katmanlı yapay sinir ağı kullanan alt dalı.</p>
+      <div class="analogy">🎯 <b>Günlük hayattan:</b> AI = "ulaşım araçları" (hepsi). ML = "motorlu araçlar". DL = "elektrikli arabalar". Her biri bir öncekinin içinde: <b>AI ⊃ ML ⊃ DL</b>.</div>
+      <p>Pratik fark: klasik ML'de hangi özelliklerin önemli olduğunu (örn. "evin metrekaresi") <b>sen seçersin</b>. DL ise ham veriden (örn. milyonlarca pikselden) önemli özellikleri <b>kendi bulur</b> — ama karşılığında devasa veri ve hesap gücü ister.</p>
+      <h4 class="mini">Öğrenmenin temel problemi nedir?</h4>
+      <p>Hayatta gerçek bir kural vardır ama biz onu tam bilmeyiz; buna <b>y = f(x)</b> diyelim (x girdi, y sonuç). ML bu bilinmeyen kuralın bir <b>taklidini</b> kurar: <b>ŷ = f̂(x)</b>. Amaç eğitim verisini birebir ezberlemek <u>değil</u>, <b>yeni veride de tutturmaktır</b> (genelleme). Tıpkı sınava çalışırken soru ezberlemek yerine konuyu kavramak gibi.</p>
+      <h4 class="mini">Parametre vs Hiperparametre (en çok karışan yer)</h4>
+      <p>Yemek analojisi: <b>hiperparametre</b> = fırının derecesi ve pişme süresi — yemeği koymadan önce <b>sen ayarlarsın</b>. <b>Parametre</b> = pişerken oluşan tat/kıvam — <b>kendiliğinden oluşur</b>. ML'de: learning rate, k-NN'deki k, ağaç derinliği → <b>hiperparametre</b> (sen seçersin). Doğrunun eğimi, sinir ağı ağırlıkları → <b>parametre</b> (model veriden öğrenir). Kısaca: parametre = model <i>ne</i> öğrenir, hiperparametre = model <i>nasıl</i> öğrenir.</p>
+      <h4 class="mini">Overfitting vs Underfitting</h4>
+      <p><b>Overfitting</b> = soruları ezberleyen ama mantığı anlamayan öğrenci: provada (eğitim) full çeker, gerçek sınavda (test) çakar. <b>Underfitting</b> = hiç çalışmamış öğrenci: ikisinde de kötü ve ikisi de birbirine yakın. İyi model ortadadır: konuyu kavrayıp yeni soruyu da çözer.</p>
+      <div class="tldr">✅ <b>Özetle:</b> AI ⊃ ML ⊃ DL iç içedir. Model, gerçek kuralın taklidini kurar; hedef ezber değil genellemedir. Hiperparametreyi sen ayarlarsın, parametreyi model öğrenir. Ezber = overfitting, tembellik = underfitting.</div>
+    </div>
 
     <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
     <p class="lead"><b>Yapay Zeka (AI)</b> insan-benzeri zeka gerektiren görevleri yapan sistemler alanıdır (akıl yürütme, planlama, arama, algılama, karar verme) ve <b>veriden öğrenmek zorunda değildir</b> (birçok klasik AI kural-tabanlı/sembolik). <b>Makine Öğrenmesi (ML)</b> AI'nin veriden öğrenen alt kümesidir. <b>Derin Öğrenme (DL)</b> ise çok katmanlı sinir ağlarıyla ham veriden karmaşık örüntüleri öğrenen ML alt dalıdır.</p>
@@ -462,6 +499,21 @@
   </div>
   <div class="week-body">
     <div class="tags"><span>ŷ = wᵀx + b</span><span>MSE</span><span>R²</span><span>Bias²+Var+Noise</span><span>Least Squares</span><span>Residual</span></div>
+
+    <h3 class="sec"><span class="ic">📖</span> Sıfırdan Anlatım</h3>
+    <div class="teach">
+      <span class="tlabel">🧑‍🏫 En baştan, sade</span>
+      <p>Önce şu ayrımı oturt: <b>tahmin edeceğin şey sayı mı, kategori mi?</b> "Bu evin fiyatı kaç TL?" → sayı → <b>regresyon</b>. "Bu müşteri geçer mi kalır mı?" → kategori → <b>sınıflandırma</b>. Bu haftanın konusu regresyonun en temeli: <b>doğrusal regresyon (linear regression)</b>.</p>
+      <div class="analogy">🎯 <b>Günlük hayattan:</b> Grafik kâğıdına reklam bütçesini (x) ve satışı (y) nokta nokta işaretle. Noktalar kabaca bir doğru boyunca diziliyorsa, "bu noktaların tam ortasından en güzel geçen düz çizgi hangisi?" sorusunun cevabı doğrusal regresyondur.</div>
+      <p>Çizginin denklemi <b>ŷ = w·x + b</b>. <b>w = eğim</b>: x bir birim artınca y ne kadar değişir (reklamı 1 birim artırınca satış ne kadar artar). <b>b = başlangıç (kesişim)</b>: x=0 iken çizginin değeri. Birden çok girdi olursa (metrekare, oda sayısı, yaş…) her birinin kendi w'si olur — çizgi bir "düzleme" dönüşür ama mantık aynı.</p>
+      <h4 class="mini">"En küçük kareler" tam olarak ne yapıyor?</h4>
+      <p>Çizgiyi noktalara en iyi nasıl oturturuz? Her noktanın çizgiye olan dikey uzaklığına <b>hata (residual)</b> deriz. Bütün hataları <b>kareleyip toplarız</b> ve bu toplamı <b>en küçük</b> yapan çizgiyi seçeriz. Neden kare alıyoruz? (1) Artı ve eksi hatalar birbirini götürüp "sıfır hata" yanılgısı yaratmasın diye, (2) büyük hatalar daha sert cezalansın diye. Adı buradan: "least squares" = kareler toplamı en az.</p>
+      <h4 class="mini">Modele not veriyoruz (metrikler)</h4>
+      <p><b>MAE</b>: ortalama kaç birim şaştık (basit, sağlam). <b>MSE</b>: kare aldığı için büyük hataları abartır. <b>RMSE</b>: MSE'nin karekökü → tekrar gerçek birime döner, yorumu kolay ("ortalama ±5 bin TL şaşıyoruz"). <b>R²</b>: modelin karne notu. 1'e yakınsa "verideki değişimi neredeyse tamamen açıklıyor"; 0 ise "düz ortalamayı söylemekten farkı yok".</p>
+      <h4 class="mini">Bias–Variance: hata nereden geliyor?</h4>
+      <p>İki ana kaynak: <b>Bias</b> = model fazla basit (kıvrımlı gerçeği düz çizgiyle açıklamaya çalışmak; sürekli aynı yöne şaşar). <b>Variance</b> = model verinin gürültüsüne fazla takılmış (her küçük dalgalanmayı ciddiye almış, kararsız). Üçüncüsü <b>Noise</b>: ölçümdeki kaçınılmaz rastgelelik. İyi model bias ile variance'ı dengeler.</p>
+      <div class="tldr">✅ <b>Özetle:</b> Doğrusal regresyon = noktaların ortasından en iyi geçen düz çizgi. Çizgiyi "hata karelerinin toplamı en küçük olacak" diye seçeriz. w = eğim, b = başlangıç. Başarıyı R²/RMSE ile ölçeriz; hatayı bias + variance + noise olarak okuruz.</div>
+    </div>
 
     <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
     <p class="lead"><b>Supervised learning</b>, etiketli veriyle girdi değişkenleri ile bilinen bir çıktı arasındaki <b>fonksiyonel ilişkiyi</b> öğrenir: <i>Output = Function(Input)</i>. 4 temel bileşen: <b>(1) Input/Features</b> (ölçülebilir mühendislik büyüklükleri: titreşim, sıcaklık, basınç…), <b>(2) Output/Label</b> (tahmin hedefi), <b>(3) Training</b> (girdi→doğru çıktıdan ilişkiyi öğrenir), <b>(4) Prediction</b> (yalnızca girdiden çıktı tahmini).</p>
@@ -655,6 +707,20 @@
   <div class="week-body">
     <div class="tags"><span>φ(x)=[1,x,x²,…]</span><span>Normal Equation</span><span>Underfit↔Overfit</span><span>U-curve</span><span>H₁⊂H₂⊂H₃</span></div>
 
+    <h3 class="sec"><span class="ic">📖</span> Sıfırdan Anlatım</h3>
+    <div class="teach">
+      <span class="tlabel">🧑‍🏫 En baştan, sade</span>
+      <p>Geçen hafta düz çizgi çektik. Ama gerçek hayatta ilişki çoğu zaman düz değildir — kıvrımlıdır (sensör eğrisi, hız-yakıt ilişkisi…). Düz çizgi bunu yakalayamaz. Çözüm: çizgiyi <b>eğebilmek</b>. İşte <b>polynomial regression</b> tam bunu yapar.</p>
+      <div class="analogy">🎯 <b>Günlük hayattan:</b> Elinde sadece cetvel varsa her şeyi düz çizmek zorundasın. Ama bir de "esnek şablon" verilse kıvrımlı çizebilirsin. Polinom, modele <b>x², x³…</b> terimleri ekleyerek ona o esnek şablonu verir. Derece arttıkça çizgi daha çok kıvrılabilir.</div>
+      <p>İşin püf noktası: x'in karesini, küpünü <b>yeni birer sütun (özellik)</b> gibi eklersin ve sonra yine sıradan doğrusal regresyon çözersin. Yani polinom regresyon aslında "kılık değiştirmiş doğrusal regresyon"dur. Katsayıları bulmak için yine <b>normal denklem: w = (XᵀX)⁻¹Xᵀy</b> kullanılır.</p>
+      <h4 class="mini">Tehlike: fazla kıvrım = ezber</h4>
+      <p>Derece çok yükselirse çizgi <b>her noktadan tam geçer</b> ama yeni veride çıldırır. Buna overfitting denir.</p>
+      <div class="analogy">🎯 <b>Düşün:</b> Noktaları birleştirmenin iki yolu var. (1) Sade bir cetvel çizgisi: bazılarını kaçırır ama genel eğilimi yakalar, yeni veride de iş görür. (2) Her noktadan geçen çılgın bir yılan çizgisi: eğitimde kusursuz ama yeni bir nokta gelince fena saçmalar (ezber). Doğrusu genelde ikisinin ortasıdır.</div>
+      <h4 class="mini">U-eğrisi: derece nasıl seçilir?</h4>
+      <p>Derece arttıkça <b>eğitim hatası hep düşer</b> (model veriyi gitgide daha çok ezberler). Ama <b>validation (görülmemiş veri) hatası</b> önce düşer, bir noktadan sonra <b>yükselir</b> — yani U şekli çizer. Doğru derece = bu U'nun en dibi. Kuralı şudur: <b>eğitim hatasına göre değil, validation hatasına göre seç.</b></p>
+      <div class="tldr">✅ <b>Özetle:</b> Polinom regresyon = x², x³… ekleyerek çizgiyi eğebilen doğrusal regresyon. Derece esnekliği kontrol eder: az = underfit, çok = overfit. En iyi dereceyi validation hatasının U-eğrisinin dibinden seçeriz.</div>
+    </div>
+
     <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
     <p class="lead"><b>Polynomial regression</b> özünde hâlâ linear regression'dır; sadece girdiyi <b>polinom terimlerine genişletip</b> bu genişletilmiş özelliklere doğrusal model uydururuz. Yani parametrelerde (w) doğrusaldır, x'te doğrusal değildir.</p>
     <div class="callout formula">Özellik haritası: φ(x) = [1, x, x², …, xᵈ] &nbsp;→&nbsp; Model: <b>ŷ = w₀ + w₁x + w₂x² + … + wᵈxᵈ</b><br>
@@ -785,6 +851,20 @@
   </div>
   <div class="week-body">
     <div class="tags"><span>Loss = MSE + λ‖w‖²</span><span>w=(XᵀX+λI)⁻¹Xᵀy</span><span>λ &amp; bias-variance</span><span>Logistic/kNN/Tree/SVM</span></div>
+
+    <h3 class="sec"><span class="ic">📖</span> Sıfırdan Anlatım</h3>
+    <div class="teach">
+      <span class="tlabel">🧑‍🏫 En baştan, sade</span>
+      <p>Geçen hafta gördük: yüksek dereceli polinom overfit ediyor, yani ezberliyor. Overfit olan modelin <b>katsayıları çok büyür</b> ve model aşırı oynak/hassas olur. Peki bunu nasıl frenleriz? İşte <b>Ridge regression</b> tam bir fren sistemidir.</p>
+      <div class="analogy">🎯 <b>Günlük hayattan:</b> Çok hevesli bir öğrenci her küçük detaya abanıp işi abartır. Sen ona "sakin ol, abartma, sade tut" dersin. Ridge de modele aynısını yapar: "katsayıları gereksiz büyütme" diye bir ceza ekler.</div>
+      <p>Nasıl? Normal hata (MSE) ölçüsüne bir <b>ceza terimi</b> ekler: <b>Loss = MSE + λ·(katsayıların kareleri toplamı)</b>. Model artık iki şeyi aynı anda dengelemek zorunda: hem hatayı küçült, hem katsayıları küçük tut. <b>λ (lambda)</b> bu frenin gücüdür.</p>
+      <h4 class="mini">λ'yı (freni) ne kadar bassak?</h4>
+      <p>λ <b>küçük</b> → fren az → model serbest → overfit riski (düşük bias, yüksek variance). λ <b>büyük</b> → fren çok → model fazla sade → underfit (yüksek bias, düşük variance). Doğru λ'yı yine <b>validation</b> ile deneyip seçeriz (örn. 0.01, 0.1, 1, 10, 100 dene, en iyisini al).</p>
+      <h4 class="mini">Neden kesişimi (intercept) cezalamayız?</h4>
+      <p>Kesişim b, çizgiyi sadece <b>yukarı-aşağı kaydırır</b>; modeli karmaşıklaştırmaz, kıvrım eklemez. O yüzden onu cezalamak gereksizdir — ceza yalnızca eğim/şekil veren katsayılara uygulanır (matematikte ilk köşegeni 0 olan D matrisiyle).</p>
+      <p>Ayrıca bu hafta sınıflandırma modellerine de kısa bir bakış var (logistic regression, k-NN, karar ağacı, SVM) — bunlar ilerleyen haftaların ön tanıtımı.</p>
+      <div class="tldr">✅ <b>Özetle:</b> Ridge = overfit'i frenlemek için MSE'ye "katsayıları küçük tut" cezası ekler (Loss = MSE + λ‖w‖²). λ frenin gücü: küçük=serbest, büyük=sade; validation ile seçilir. Kesişim cezalanmaz çünkü karmaşıklık katmaz.</div>
+    </div>
 
     <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
     <p class="lead"><b>Neden regularization?</b> Polinom regresyon esnektir ama 4 zayıflığı vardır: (a) <b>overfitting</b>, (b) <b>büyük katsayılar</b>, (c) <b>multicollinearity</b> (x², x³ sütunları çok korelasyonlu → XᵀX neredeyse tekil), (d) <b>kötü extrapolation</b>. Çözüm: <b>Ridge regression</b>.</p>
@@ -943,6 +1023,21 @@
   <div class="week-body">
     <div class="tags"><span>σ(z)=1/(1+e⁻ᶻ)</span><span>log-odds</span><span>Newton-Raphson</span><span>TP/TN/FP/FN</span><span>Accuracy</span><span>Log-loss</span></div>
 
+    <h3 class="sec"><span class="ic">📖</span> Sıfırdan Anlatım</h3>
+    <div class="teach">
+      <span class="tlabel">🧑‍🏫 En baştan, sade</span>
+      <p>Şimdiye kadar sayı tahmin ettik (regresyon). Ama bazen cevap "evet/hayır" gibi bir <b>kategori</b>dir: müşteri krediyi öder mi ödemez mi? Burada düz çizgi işe yaramaz, çünkü düz çizgi −500 ya da 8000 gibi saçma değerler üretebilir; biz ise <b>0 ile 1 arası bir olasılık</b> istiyoruz. İşte <b>logistic regression</b> bunu çözer.</p>
+      <div class="analogy">🎯 <b>Günlük hayattan:</b> Doktor "kalp krizi geçirme ihtimaliniz %80" der, "−3" demez. Logistic regresyon da çıktıyı her zaman %0–%100 arası bir olasılığa çevirir.</div>
+      <p>Bunu yapan sihirli şey <b>sigmoid</b> fonksiyonudur: <b>σ(z) = 1/(1+e⁻ᶻ)</b>. Bu, gelen herhangi bir sayıyı (−∞'dan +∞'a) alıp <b>0 ile 1 arasına ezen</b> S şeklinde bir eğridir. Önce normal bir doğrusal toplam hesaplanır (z = w·x + b), sonra sigmoid'den geçirilip olasılığa dönüştürülür.</p>
+      <h4 class="mini">Karar nasıl veriliyor?</h4>
+      <p>Basit bir eşik: olasılık <b>0.5'i geçiyorsa "evet" (1)</b>, geçmiyorsa "hayır" (0). İstersen eşiği değiştirebilirsin (örn. kritik bir hastalıkta 0.3 yapıp daha temkinli olmak).</p>
+      <h4 class="mini">Newton-Raphson neden var?</h4>
+      <p>Doğrusal regresyonda katsayıları tek formülle buluyorduk. Logistic'te sigmoid yüzünden böyle temiz bir formül yok; bu yüzden <b>adım adım yaklaşırız</b>: bir tahminle başla, hatayı ölç, katsayıları biraz düzelt, tekrar et... Katsayılar artık değişmemeye başlayınca dur. Newton-Raphson bu "akıllı adım adım iyileştirme" yöntemidir.</p>
+      <h4 class="mini">Başarıyı nasıl ölçeriz?</h4>
+      <p><b>Confusion matrix</b>: doğru/yanlış tahminleri 4 kutuya ayırır — <b>TP</b> (doğru "evet"), <b>TN</b> (doğru "hayır"), <b>FP</b> (yanlış alarm), <b>FN</b> (kaçırılan). <b>Accuracy</b> = doğruların toplam içindeki oranı. <b>Log-loss</b> ise sadece doğru/yanlışa değil, <b>olasılığın ne kadar emin ve doğru</b> olduğuna bakar (doğru cevaba düşük olasılık verdiysen seni cezalandırır).</p>
+      <div class="tldr">✅ <b>Özetle:</b> Logistic regression, sigmoid ile çıktıyı 0–1 olasılığa çevirip kategori tahmin eder; 0.5 eşiğiyle karar verir. Katsayıları Newton-Raphson ile adım adım buluruz. Başarıyı confusion matrix, accuracy ve log-loss ile ölçeriz.</div>
+    </div>
+
     <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
     <p class="lead"><b>Logistic regression</b> sürekli bir değer yerine <b>olasılık</b> tahmin eder. Linear regression'a yakındır ama çıktıyı sigmoid ile [0,1]'e sıkıştırır.</p>
     <div class="callout formula">
@@ -1095,6 +1190,20 @@
   </div>
   <div class="week-body">
     <div class="tags"><span>Lazy / instance-based</span><span>Euclidean/Manhattan/Minkowski/Mahalanobis</span><span>√n</span><span>odd k</span><span>F1-score</span><span>Curse of dimensionality</span></div>
+
+    <h3 class="sec"><span class="ic">📖</span> Sıfırdan Anlatım</h3>
+    <div class="teach">
+      <span class="tlabel">🧑‍🏫 En baştan, sade</span>
+      <p><b>k-NN</b>'in mantığı tek cümle: <b>"Bana arkadaşını söyle, kim olduğunu söyleyeyim."</b> Yeni bir noktayı sınıflandırmak için, ona <b>en yakın k tane komşuya</b> bakarsın; komşuların çoğunluğu hangi sınıftansa, yeni nokta da odur.</p>
+      <div class="analogy">🎯 <b>Günlük hayattan:</b> Yeni bir mahalleye taşındın, bir kafenin iyi mi kötü mü olduğunu bilmiyorsun. En yakın 5 komşuna sorarsın; 4'ü "iyi" diyorsa, "iyi" dersin. k-NN aynen bunu yapar.</div>
+      <p>İlginç olan şu: k-NN <b>önceden bir model kurmaz</b>. Sadece tüm eğitim verisini ezberler (saklar) ve asıl işi <b>tahmin anında</b> yapar: yeni nokta gelince herkese olan mesafeyi hesaplar. Bu yüzden ona <b>"tembel öğrenici" (lazy learner)</b> denir — eğitimi bedava, tahmini pahalı.</p>
+      <h4 class="mini">"Yakınlık" nasıl ölçülür? (mesafe)</h4>
+      <p>Komşu kim, neye göre belirliyoruz? <b>Mesafe</b>yle. En yaygını <b>Euclidean</b> (kuş uçuşu düz mesafe: √[(x₁−x₂)²+(y₁−y₂)²]). Bir diğeri <b>Manhattan</b> (sokak sokak gitme, ızgara mesafesi). Mahalanobis ise özellikler arası ilişkiyi de hesaba katan gelişmiş bir ölçüdür.</p>
+      <h4 class="mini">k kaç olmalı? (en kritik ayar)</h4>
+      <p><b>k=1</b>: sadece en yakın tek komşuya bakar → çok hassas, tek bir aykırı/gürültülü komşu seni yanıltır (overfit). <b>Çok büyük k</b>: çok komşunun ortalamasına bakar → kararlı ama yerel detay kaybolur, her şey birbirine benzer (underfit). İyi k ortadadır; kaba başlangıç <b>√n</b>, kesin seçim <b>cross-validation</b>. İkili sınıfta <b>tek (3,5,7…)</b> seçilir ki oylarda beraberlik çıkmasın.</p>
+      <div class="callout trap" style="margin-top:10px"><span class="lbl">⚠️ En sık unutulan</span>k-NN mesafeyle çalıştığı için <b>ölçekleme şart</b>. Gelir (binlerce) ve yaş (onlarca) aynı teraziye konmazsa, gelir mesafeyi tek başına ezer ve yaş hiç sayılmamış olur. Bu yüzden önce standardize/min-max yaparız.</div>
+      <div class="tldr">✅ <b>Özetle:</b> k-NN = en yakın k komşuya bakıp çoğunluğa uymak. Model kurmaz, veriyi ezberler (lazy). Yakınlık mesafeyle ölçülür; küçük k hassas/oynak, büyük k kararlı/körelmiş. Mutlaka önce ölçekle.</div>
+    </div>
 
     <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
     <p class="lead"><b>k-NN</b> yeni bir örneği, özellik uzayında <b>en yakın k komşusunun</b> çoğunluk sınıfına (classification) veya hedeflerinin ortalamasına (regression) göre tahmin eder. <b>Lazy learner</b>'dır: eğitimde açık parametrik model kurmaz, veriyi saklar; asıl hesabı <b>tahmin anında</b> yapar. Bu yüzden eğitim maliyeti düşük, <b>tahmin maliyeti yüksek</b>tir (instance/memory-based).</p>
@@ -1254,6 +1363,22 @@
   <div class="week-body">
     <div class="tags"><span>k=3</span><span>k=5</span><span>Majority vote</span><span>Validation/Test Error</span><span>Yanlış sınıflama</span></div>
 
+    <h3 class="sec"><span class="ic">📖</span> Sıfırdan Anlatım</h3>
+    <div class="teach">
+      <span class="tlabel">🧑‍🏫 En baştan, sade</span>
+      <p>Bu hafta k-NN'i gerçek problemlerde <b>elle adım adım</b> uyguluyoruz. Teori basit, ama "nasıl hesaplanır"ı oturtmak önemli. Sınavda en çok bu tarz "şu noktayı sınıflandır" soruları gelir.</p>
+      <h4 class="mini">Bir sorgu noktasını sınıflandırma — 4 adım</h4>
+      <p><b>1) Mesafe hesapla:</b> Yeni noktadan <b>her</b> eğitim noktasına Euclidean mesafeyi bul: √[(x₁−x₂)²+(y₁−y₂)²].<br>
+      <b>2) Sırala:</b> Mesafeleri küçükten büyüğe diz.<br>
+      <b>3) En yakın k'yi seç:</b> İlk k tanesini al (k=3 ise en yakın 3 komşu).<br>
+      <b>4) Oyla:</b> Bu k komşunun sınıflarına bak, <b>çoğunluk hangisiyse</b> onu ata.</p>
+      <div class="analogy">🎯 <b>Örnek:</b> Yeni pompanın en yakın 3 komşusu "sağlıklı, sağlıklı, sağlıklı" ise → pompa "sağlıklı". "dengesiz, dengesiz, sağlıklı" ise → çoğunluk "dengesiz".</div>
+      <h4 class="mini">Hata nasıl ölçülür?</h4>
+      <p>Doğru sınıfı bildiğimiz validation/test noktalarında tahminleri gerçeklerle karşılaştırırız. <b>Hata = yanlış sınıflanan sayısı / toplam.</b> Örn. 4 noktadan 1'i yanlışsa hata = 1/4 = %25.</p>
+      <div class="callout trap" style="margin-top:10px"><span class="lbl">⚠️ Dikkat</span>Sınıf sınırına yakın noktalar tehlikelidir: oy 3'e 2 gibi kıl payı dönebilir ve yanlış sınıfa kayabilir. Bu bir hata değil, k-NN'in doğasıdır — farklı k, ölçekleme veya ağırlıklı oylama sonucu değiştirebilir.</div>
+      <div class="tldr">✅ <b>Özetle:</b> Mesafe hesapla → sırala → en yakın k'yi al → çoğunluk oyu. Hata = yanlış/toplam. Sınır bölgesindeki noktalarda oy kıl payı dönebilir.</div>
+    </div>
+
     <h3 class="sec"><span class="ic">📘</span> Kısa Özet</h3>
     <p class="lead">k-NN sınıflandırma prosedürü: (1) sorgu noktasından tüm eğitim noktalarına Euclidean mesafe hesapla, (2) artan sırala, (3) en yakın k komşuyu seç, (4) <b>çoğunluk oyuyla</b> sınıf ata. Hata = (yanlış sınıflanan)/(toplam).</p>
 
@@ -1365,6 +1490,18 @@
   </div>
   <div class="week-body">
     <div class="tags"><span>ŷ=(1/k)Σyᵢ</span><span>MAE/MSE/RMSE</span><span>k=3 optimal</span><span>oversmoothing</span></div>
+
+    <h3 class="sec"><span class="ic">📖</span> Sıfırdan Anlatım</h3>
+    <div class="teach">
+      <span class="tlabel">🧑‍🏫 En baştan, sade</span>
+      <p>k-NN sadece sınıflandırma değil, <b>sayı tahmini (regresyon)</b> de yapar. Fark çok küçük: sınıflandırmada komşuların <b>çoğunluğuna</b> bakıyorduk; regresyonda komşuların hedef değerlerinin <b>ortalamasını</b> alırız.</p>
+      <div class="analogy">🎯 <b>Günlük hayattan:</b> Evinin değerini merak ediyorsun. En yakın 3 benzer evin fiyatına bakıp ortalamasını alırsın: (3M + 3.2M + 2.8M)/3 = 3M. İşte k-NN regresyon birebir bu.</div>
+      <p>Formül: <b>ŷ = (y₁ + y₂ + … + y_k) / k</b>. Yani en yakın k komşunun değerlerinin düz ortalaması. Hatayı MAE/MSE/RMSE ile ölçeriz (sınıflandırmadaki "doğru/yanlış" yerine, "kaç birim şaştık").</p>
+      <h4 class="mini">k'nin sihri: ne az ne çok</h4>
+      <p><b>k=1</b>: sadece en yakın tek komşunun değerini verir → çok <b>gürültülü/zıplayan</b> tahminler (o tek komşu aykırıysa yandın). <b>k çok büyük</b>: çok komşuyu ortalar → tahminler <b>aşırı yumuşar (oversmoothing)</b>, uç değerleri kaçırır. Örneğin yüksek bir değeri tahmin etmen gerekirken, büyük k onu aşağıdaki komşularla ortalayıp olduğundan düşük söyler.</p>
+      <div class="analogy">🎯 <b>Sezgi:</b> k=1 "tek kişinin lafına bakmak" (riskli), k çok büyük "herkesin ortalamasına bakmak" (kişiye özel olmaktan çıkar). Genelde <b>k=3</b> gibi orta bir değer en iyi dengeyi verir — bunu da validation hatasıyla doğrularız.</div>
+      <div class="tldr">✅ <b>Özetle:</b> k-NN regresyon = en yakın k komşunun değerlerinin ortalaması (ŷ=Σyᵢ/k). k=1 gürültülü, büyük k aşırı yumuşatır (oversmoothing); en iyi k'yi validation MAE/RMSE ile seçeriz.</div>
+    </div>
 
     <h3 class="sec"><span class="ic">📘</span> Kısa Özet</h3>
     <p class="lead">k-NN <b>regresyon</b>da çıktı bir sınıf değil sayıdır: tahmin, en yakın k komşunun <b>hedef değerlerinin ortalamasıdır</b>: ŷ = (y₁+y₂+…+y_k)/k. Hata MAE/MSE/RMSE ile ölçülür ve en iyi k validation hatasıyla seçilir.</p>
@@ -1479,6 +1616,18 @@
   <div class="week-body">
     <div class="tags"><span>w = 1/d</span><span>Σ ağırlık / sınıf</span><span>ŷ=Σwy/Σw</span><span>sınır kararları</span></div>
 
+    <h3 class="sec"><span class="ic">📖</span> Sıfırdan Anlatım</h3>
+    <div class="teach">
+      <span class="tlabel">🧑‍🏫 En baştan, sade</span>
+      <p>Normal k-NN'de bir adaletsizlik var: en yakın k komşunun <b>hepsi eşit oy</b> kullanıyor. Ama 0.1 mesafedeki çok yakın bir komşuyla, 4.8 mesafedeki uzak bir komşunun aynı söz hakkına sahip olması mantıksız. <b>Ağırlıklı k-NN (weighted k-NN)</b> bunu düzeltir: <b>yakın komşuya daha çok oy</b> verir.</p>
+      <div class="analogy">🎯 <b>Günlük hayattan:</b> Bir karar verirken en yakın dostunun tavsiyesi, uzaktan tanıdığın birininkinden daha çok etkiler seni. Ağırlıklı k-NN de "yakın = daha güvenilir" mantığını kullanır.</div>
+      <p>Ağırlık formülü: <b>w = 1/d</b> (mesafe d küçükse ağırlık büyük olur). Yani 0.1 mesafedeki komşunun ağırlığı 1/0.1 = 10, 5 mesafedekinin 1/5 = 0.2. İlki 50 kat daha etkili!</p>
+      <h4 class="mini">Karar nasıl değişiyor?</h4>
+      <p><b>Sınıflandırmada:</b> artık komşuları saymıyoruz, her sınıfın <b>ağırlık toplamına</b> bakıyoruz. Hangi sınıfın toplam ağırlığı büyükse o kazanır. Örn. iki yakın komşu sınıf 1 (ağırlık 1.99+1.99) ile bir uzak komşu sınıf 0'ı (ağırlık 0.66) rahat yener: 3.98 &gt; 0.66 → sınıf 1.<br>
+      <b>Regresyonda:</b> düz ortalama yerine <b>ağırlıklı ortalama</b>: ŷ = (Σ wᵢ·yᵢ) / (Σ wᵢ).</p>
+      <div class="tldr">✅ <b>Özetle:</b> Ağırlıklı k-NN, yakın komşuya daha çok söz hakkı verir (w=1/d). Sınıflandırmada sınıfların ağırlık toplamı yarışır, regresyonda ağırlıklı ortalama alınır. Özellikle sınır bölgelerinde daha isabetli.</div>
+    </div>
+
     <h3 class="sec"><span class="ic">📘</span> Kısa Özet</h3>
     <p class="lead"><b>Ağırlıklı k-NN</b>, tüm komşulara eşit oy vermek yerine <b>yakın komşulara daha çok ağırlık</b> verir. Sık kullanılan ağırlık: <b>w = 1/d</b> (mesafe küçükse ağırlık büyük).</p>
     <div class="callout formula">
@@ -1587,6 +1736,21 @@
   </div>
   <div class="week-body">
     <div class="tags"><span>ŷ=Σwy/Σw</span><span>w=1/d²</span><span>Min-Max</span><span>z=(x−μ)/σ</span><span>AE/SE/APE/RMSE</span></div>
+
+    <h3 class="sec"><span class="ic">📖</span> Sıfırdan Anlatım</h3>
+    <div class="teach">
+      <span class="tlabel">🧑‍🏫 En baştan, sade</span>
+      <p>Bu hafta iki şey: ağırlıklı k-NN regresyonu biraz daha ileri götürmek ve <b>ölçekleme</b>yi (normalizasyon/standardizasyon) düzgün öğrenmek.</p>
+      <h4 class="mini">w = 1/d² (ters kare)</h4>
+      <p>Geçen hafta w=1/d kullandık. Bu hafta bir de <b>w = 1/d²</b> var: yakın komşuyu daha da <b>sert</b> vurgular. Mesafeyi kareye aldığı için uzak komşuların etkisi çok daha hızlı düşer. Yani "yakın komşuya iyice abanmak" istiyorsan 1/d² kullanırsın.</p>
+      <h4 class="mini">Ölçekleme neden hayati? (k-NN'in can damarı)</h4>
+      <p>k-NN mesafeyle çalışır. Özelliklerden biri büyük sayılarda (gelir: 20.000–200.000), diğeri küçük sayılarda (yaş: 20–60) ise, mesafeyi neredeyse <b>tamamen gelir belirler</b>; yaş hiç sayılmamış olur. Bunu önlemek için hepsini ortak bir ölçeğe çekeriz:</p>
+      <div class="analogy">🎯 <b>Sezgi:</b> Bir yarışta birinin mesafesini kilometreyle, diğerininkini milimetreyle ölçersen karşılaştırma anlamsız olur. Önce ikisini de aynı birime çevirmen lazım. Ölçekleme tam bu.</div>
+      <p><b>İki yol:</b> <b>Min-Max</b>: değeri 0–1 arasına sıkıştırır → x' = (x−min)/(max−min). <b>Standardizasyon</b>: ortalamayı 0, yayılımı 1 yapar → z = (x−μ)/σ.</p>
+      <div class="callout trap" style="margin-top:10px"><span class="lbl">⚠️ Kritik kural — kopya çekme yok</span>Ölçekleme için kullanılan min/max veya ortalama/σ değerleri <b>yalnızca eğitim verisinden</b> hesaplanır. Test verisinden hesaplarsan, modele test hakkında gizli bilgi sızdırmış olursun (data leakage) ve sonuç olduğundan iyi görünür — bu bir sınav tuzağıdır.</div>
+      <p><b>Akış:</b> önce ölçekle (eğitim parametreleriyle) → birkaç k dene → validation MAE'si en düşük k'yi seç → o k ile test/yeni veriyi değerlendir.</p>
+      <div class="tldr">✅ <b>Özetle:</b> w=1/d² yakın komşuyu daha da öne çıkarır. Ölçekleme şarttır (büyük sayılı özellik mesafeyi ezmesin); min-max [0,1]'e, standardizasyon ortalama 0'a çeker. Parametreleri <b>sadece eğitimden</b> hesapla.</div>
+    </div>
 
     <h3 class="sec"><span class="ic">📘</span> Kısa Özet</h3>
     <p class="lead">Ağırlıklı k-NN regresyonda tahmin <b>ŷ = Σwᵢyᵢ / Σwᵢ</b>. İki yaygın ağırlık şeması: <b>ters mesafe w=1/d</b> ve <b>ters kare mesafe w=1/d²</b> (yakın komşuyu daha da çok vurgular). Özellikler farklı ölçekteyse önce ölçeklenir.</p>
@@ -1705,6 +1869,21 @@
   </div>
   <div class="week-body">
     <div class="tags"><span>Gini=1−Σpᵢ²</span><span>Entropy=−Σpᵢlog₂pᵢ</span><span>Information Gain</span><span>ID3</span><span>Pruning</span><span>Random Forest</span></div>
+
+    <h3 class="sec"><span class="ic">📖</span> Sıfırdan Anlatım</h3>
+    <div class="teach">
+      <span class="tlabel">🧑‍🏫 En baştan, sade</span>
+      <p><b>Karar ağacı (decision tree)</b>, "20 soru" oyunu gibidir. Bir dizi <b>evet/hayır sorusu</b> sorarak veriyi gitgide daha saf gruplara böler ve sonunda karara varır.</p>
+      <div class="analogy">🎯 <b>Günlük hayattan:</b> Banka kredisi verirken: "Geliri 50.000'den fazla mı?" → Evet ise "Borcu düşük mü?" → Evet ise "Onayla". Tıpkı bir akış şeması. Karar ağacı bu akış şemasını verilerden <b>otomatik</b> çıkarır.</div>
+      <p>Yapı: en üstteki ilk soru <b>kök (root)</b>, ara sorular <b>iç düğümler</b>, en alttaki kararlar <b>yapraklar (leaf)</b>. Amaç: her yaprağın olabildiğince <b>saf</b> olması (içindekilerin hepsi aynı sınıf).</p>
+      <h4 class="mini">"Saflık" nasıl ölçülür? (Gini & Entropy)</h4>
+      <p>Bir grubun ne kadar <b>karışık</b> olduğunu ölçeriz. Hepsi aynı sınıfsa (örn. 4 "geçer") grup <b>saftır</b> → Gini=0, Entropy=0. Yarı yarıya karışıksa (2 geçer, 2 kalır) → maksimum karışıklık (Entropy=1). Formüller: <b>Gini = 1−Σpᵢ²</b>, <b>Entropy = −Σpᵢ·log₂pᵢ</b>. İkisi de aynı işi yapar (karışıklık ölçer); Gini daha hızlı, entropy daha "teorik".</p>
+      <div class="analogy">🎯 <b>Sezgi:</b> Bir torbada hep kırmızı bilye varsa, çekeceğin bilyenin rengini kesin bilirsin (belirsizlik=0). Yarı kırmızı yarı mavi ise tam bir tahmin kumarı (belirsizlik=maksimum). Saflık = belirsizliğin azlığı.</div>
+      <h4 class="mini">Hangi soruyu önce soralım? (Information Gain)</h4>
+      <p>Her aday soru için: "bu soruyu sorunca karışıklık ne kadar azalıyor?" hesaplanır. Buna <b>Information Gain (IG) = eski karışıklık − soru sonrası karışıklık</b> denir. <b>En çok azaltan soruyu</b> kök seçeriz. Örnekte Age Group, Income ve Student'tan daha fazla IG verdiği için ilk soru o oldu.</p>
+      <div class="callout trap" style="margin-top:10px"><span class="lbl">⚠️ En büyük zaaf: overfitting</span>Ağaç sınırsız büyürse her örneğe özel bir yaprak açar = ezber (eğitimde %100, testte çakar). Önlemler: derinliği sınırla (max_depth), yaprakta min örnek say, gereksiz dalları kes (<b>pruning/budama</b>), veya çok ağacı birleştir (<b>Random Forest</b>).</div>
+      <div class="tldr">✅ <b>Özetle:</b> Karar ağacı = evet/hayır sorularıyla veriyi saf gruplara bölen akış şeması. Saflığı Gini/Entropy ölçer (saf=0). Her adımda karışıklığı en çok azaltan soruyu (en yüksek Information Gain) seçeriz. Aşırı büyürse ezberler → budama/Random Forest ile engellenir.</div>
+    </div>
 
     <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
     <p class="lead"><b>Decision Tree</b> hem sınıflandırma hem regresyon için kullanılan, veriyi bir dizi karar kuralıyla bölen gözetimli bir algoritmadır. İnsan karar vermesine benzediği için <b>sezgisel ve yorumlanabilir</b>dir. Amaç, grupları olabildiğince <b>saf (pure)</b> hale getirmektir (her grup ağırlıkla tek sınıf).</p>
