@@ -1,0 +1,1961 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ENG3040 · Makine Öğrenmesi — İnteraktif Çalışma Rehberi</title>
+<style>
+  :root{
+    --bg:#eef1f8; --card:#ffffff; --ink:#1a2238; --muted:#5b6680;
+    --primary:#243b8f; --primary2:#3a56d4; --accent:#0fb5ba; --accent2:#7c3aed;
+    --amber:#f59e0b; --amber-bg:#fff7e6; --green:#16a34a; --green-bg:#e9f9ef;
+    --red:#dc2626; --red-bg:#fdeaea; --line:#e2e7f2; --shadow:0 8px 30px rgba(30,40,80,.08);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    line-height:1.65;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1040px;margin:0 auto;padding:0 18px}
+
+  /* HERO */
+  .hero{background:linear-gradient(135deg,#1b2a6b 0%,#2d3a8c 45%,#3a56d4 100%);color:#fff;
+    padding:46px 0 40px;position:relative;overflow:hidden}
+  .hero::after{content:"";position:absolute;right:-80px;top:-80px;width:320px;height:320px;
+    background:radial-gradient(circle,rgba(15,181,186,.35),transparent 70%);border-radius:50%}
+  .hero .tag{display:inline-block;background:rgba(255,255,255,.16);padding:5px 14px;border-radius:30px;
+    font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600}
+  .hero h1{margin:14px 0 6px;font-size:2.15rem;line-height:1.15;font-weight:800}
+  .hero p.sub{margin:0;color:#d6ddff;font-size:1.05rem;max-width:640px}
+  .hero .meta{margin-top:18px;display:flex;flex-wrap:wrap;gap:10px}
+  .hero .meta span{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);
+    padding:6px 13px;border-radius:10px;font-size:.85rem}
+  .stats{display:flex;flex-wrap:wrap;gap:14px;margin-top:22px}
+  .stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:14px;
+    padding:12px 18px;min-width:96px}
+  .stat b{display:block;font-size:1.5rem;font-weight:800;line-height:1}
+  .stat small{color:#cdd6ff;font-size:.74rem;text-transform:uppercase;letter-spacing:.08em}
+
+  /* STICKY PROGRESS */
+  .progress-bar{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.92);
+    backdrop-filter:blur(8px);border-bottom:1px solid var(--line);box-shadow:0 2px 14px rgba(30,40,80,.06)}
+  .progress-inner{display:flex;align-items:center;gap:16px;padding:10px 0}
+  .track{flex:1;height:10px;background:#dde3f1;border-radius:20px;overflow:hidden}
+  .fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--primary2));
+    border-radius:20px;transition:width .4s ease}
+  .pscore{font-size:.85rem;font-weight:700;color:var(--primary);white-space:nowrap}
+  .pscore .ok{color:var(--green)} .pscore .muted{color:var(--muted);font-weight:600}
+
+  /* TOC */
+  .toc{margin:24px 0 6px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+  .toc a{display:inline-block;background:#fff;border:1px solid var(--line);color:var(--primary);
+    padding:6px 12px;border-radius:9px;font-size:.82rem;font-weight:600;text-decoration:none;transition:.15s}
+  .toc a:hover{background:var(--primary);color:#fff;transform:translateY(-1px)}
+  .toolbar{margin:14px 0 8px;display:flex;gap:10px;flex-wrap:wrap}
+  .btn{cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--primary);
+    padding:8px 15px;border-radius:10px;font-size:.84rem;font-weight:600;transition:.15s}
+  .btn:hover{background:var(--primary);color:#fff}
+
+  /* WEEK CARD */
+  .week{background:var(--card);border:1px solid var(--line);border-radius:18px;margin:18px 0;
+    box-shadow:var(--shadow);overflow:hidden;border-left:6px solid var(--primary2)}
+  .week-head{display:flex;align-items:center;gap:16px;padding:18px 22px;cursor:pointer;user-select:none;
+    transition:background .15s}
+  .week-head:hover{background:#f5f7fe}
+  .wnum{flex:none;width:46px;height:46px;border-radius:12px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;font-weight:800;font-size:1.15rem}
+  .week-head .htxt{flex:1}
+  .week-head h2{margin:0;font-size:1.18rem;font-weight:800}
+  .week-head .sub2{margin:2px 0 0;color:var(--muted);font-size:.86rem}
+  .chev{flex:none;transition:transform .3s;color:var(--muted);font-size:1.3rem}
+  .week.open .chev{transform:rotate(90deg)}
+  .week-body{display:none;padding:0 22px 24px;animation:fade .35s ease}
+  .week.open .week-body{display:block}
+  @keyframes fade{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 16px}
+  .tags span{background:#eef1fb;color:var(--primary);font-size:.72rem;font-weight:600;
+    padding:3px 9px;border-radius:20px}
+
+  h3.sec{font-size:1.02rem;margin:24px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--line);
+    color:var(--primary);display:flex;align-items:center;gap:8px}
+  h3.sec .ic{font-size:1.05rem}
+  h4.mini{font-size:.95rem;margin:16px 0 6px;color:var(--ink);font-weight:700}
+  p{margin:9px 0}
+  ul.clean{margin:8px 0;padding-left:20px} ul.clean li{margin:5px 0}
+  .lead{color:var(--ink)}
+
+  /* CALLOUTS */
+  .callout{border-radius:12px;padding:13px 16px;margin:14px 0;font-size:.92rem;border:1px solid}
+  .formula{background:#f4f6fd;border-color:#dde3f5;font-family:"SF Mono",ui-monospace,Menlo,Consolas,monospace;
+    font-size:.95rem;color:#1c2750;overflow-x:auto}
+  .formula b{color:var(--primary2)}
+  .key{background:linear-gradient(135deg,#eef6ff,#f1fbfb);border-color:#cfeaf0}
+  .key .lbl{font-weight:800;color:var(--accent);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:3px}
+  .prof{background:var(--amber-bg);border-color:#f6d9a0;border-left:5px solid var(--amber)}
+  .prof .lbl{font-weight:800;color:#b45309;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:3px}
+  .trap{background:var(--red-bg);border-color:#f3c4c4;border-left:5px solid var(--red)}
+  .trap .lbl{font-weight:800;color:var(--red);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:3px}
+
+  /* TABLE */
+  .tbl{width:100%;border-collapse:collapse;margin:12px 0;font-size:.88rem;overflow:hidden;border-radius:10px}
+  .tbl th,.tbl td{border:1px solid var(--line);padding:8px 11px;text-align:left}
+  .tbl th{background:#eef1fb;color:var(--primary);font-weight:700}
+  .tbl tr:nth-child(even) td{background:#f8faff}
+  .tbl .hl{background:#fff7e6 !important;font-weight:700}
+
+  /* WORKED EXAMPLE */
+  .ex{background:#fbfcff;border:1px solid #e3e9f8;border-radius:14px;padding:6px 18px 16px;margin:14px 0}
+  .ex .extitle{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,var(--accent2),#a855f7);
+    color:#fff;font-weight:700;font-size:.84rem;padding:6px 14px;border-radius:0 0 12px 12px;margin-left:-6px}
+  .step{margin:12px 0;padding-left:14px;border-left:3px solid #d9e0f4}
+  .step .sh{font-weight:700;color:var(--primary2);font-size:.9rem}
+  .res{background:var(--green-bg);border:1px solid #bfe9cd;border-radius:9px;padding:8px 13px;margin:8px 0;font-weight:600}
+
+  /* MCQ */
+  .mcq{background:#fff;border:1px solid var(--line);border-radius:13px;padding:15px 17px;margin:13px 0}
+  .mcq .q{font-weight:700;margin:0 0 11px}
+  .mcq .q .qn{color:var(--accent2);font-weight:800;margin-right:6px}
+  .diff{float:right;font-size:.68rem;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.04em}
+  .d1{background:#e9f9ef;color:#15803d} .d2{background:#fff7e6;color:#b45309} .d3{background:#fdeaea;color:#b91c1c}
+  .opt{display:block;width:100%;text-align:left;background:#f7f9fe;border:1.5px solid var(--line);
+    border-radius:10px;padding:10px 13px;margin:7px 0;cursor:pointer;font-size:.9rem;color:var(--ink);transition:.15s}
+  .opt:hover{border-color:var(--primary2);background:#eef2ff}
+  .opt.correct{background:var(--green-bg);border-color:var(--green);color:#14532d;font-weight:600}
+  .opt.wrong{background:var(--red-bg);border-color:var(--red);color:#7f1d1d}
+  .opt.lock{cursor:default;opacity:.92}
+  .opt .mk{float:right;font-weight:800}
+  .explain{display:none;margin-top:10px;padding:11px 14px;background:#f4f7ff;border-left:4px solid var(--primary2);
+    border-radius:8px;font-size:.88rem}
+  .explain.show{display:block;animation:fade .3s ease}
+  .explain b{color:var(--primary)}
+
+  /* OPEN ENDED */
+  .oeq{background:linear-gradient(135deg,#fbfcff,#f6f9ff);border:1px solid var(--line);border-radius:13px;
+    padding:15px 17px;margin:13px 0}
+  .oeq .q{font-weight:700;margin:0 0 6px}
+  .oeq .q .qn{color:var(--accent);font-weight:800;margin-right:6px}
+  .reveal{cursor:pointer;background:var(--primary);color:#fff;border:none;padding:7px 16px;border-radius:9px;
+    font-size:.82rem;font-weight:600;margin-top:6px;transition:.15s}
+  .reveal:hover{background:var(--primary2)}
+  .answer{display:none;margin-top:11px;padding:12px 15px;background:#fff;border:1px dashed #c3cdef;
+    border-radius:10px;font-size:.9rem}
+  .answer.show{display:block;animation:fade .3s ease}
+  .answer .atag{font-size:.7rem;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:.1em;display:block;margin-bottom:5px}
+
+  /* BACK TO TOP */
+  #top{position:fixed;right:22px;bottom:22px;width:46px;height:46px;border-radius:50%;border:none;
+    background:var(--primary2);color:#fff;font-size:1.3rem;cursor:pointer;box-shadow:var(--shadow);
+    opacity:0;pointer-events:none;transition:.25s;z-index:60}
+  #top.show{opacity:1;pointer-events:auto}
+  footer{text-align:center;color:var(--muted);font-size:.82rem;padding:30px 0 50px}
+  mark{background:#fff2b8;padding:0 3px;border-radius:3px}
+  .kbd{font-family:ui-monospace,monospace;background:#eef1fb;border:1px solid #d6def2;border-bottom-width:2px;
+    border-radius:5px;padding:1px 6px;font-size:.85em}
+  @media(max-width:600px){.hero h1{font-size:1.6rem}.week-head h2{font-size:1.02rem}.wrap{padding:0 13px}}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="tag">ENG3040 · Machine Learning for Engineers</span>
+    <h1>Makine Öğrenmesi — İnteraktif Sınav Çalışma Rehberi</h1>
+    <p class="sub">Tüm haftaların geniş özeti, çözümlü örnekler ve hocanın sorabileceği tarzda nokta-atış sorular. Tıkla, çöz, anında geri bildirim al.</p>
+    <div class="meta">
+      <span>👩‍🏫 Dr. Aysun Soysal</span>
+      <span>🏛️ Haliç Üniv. · Bilgisayar Müh.</span>
+      <span>📅 Vize %40 · Final %60</span>
+    </div>
+    <div class="stats">
+      <div class="stat"><b>12</b><small>Hafta</small></div>
+      <div class="stat"><b>13</b><small>Çözümlü Örnek</small></div>
+      <div class="stat"><b id="totMcq">0</b><small>Çoktan Seçmeli</small></div>
+      <div class="stat"><b id="totOeq">0</b><small>Açık Uçlu</small></div>
+    </div>
+  </div>
+</header>
+
+<div class="progress-bar">
+  <div class="wrap progress-inner">
+    <div class="track"><div class="fill" id="fill"></div></div>
+    <div class="pscore" id="pscore"><span class="muted">Henüz başlamadın</span></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <nav class="toc" id="toc"></nav>
+  <div class="toolbar">
+    <button class="btn" id="expandAll">⊕ Tümünü Aç</button>
+    <button class="btn" id="collapseAll">⊖ Tümünü Kapat</button>
+    <button class="btn" id="resetQ">↻ Soruları Sıfırla</button>
+  </div>
+
+<!-- ===================== WEEK 1 ===================== -->
+<section class="week" data-n="H1" id="week1">
+  <div class="week-head">
+    <div class="wnum">1</div>
+    <div class="htxt">
+      <h2>Derse Giriş &amp; Oryantasyon <span class="wkscore" style="display:none;font-size:.7rem;font-weight:700;background:#e9f9ef;color:#15803d;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle"></span></h2>
+      <p class="sub2">ML nedir · mühendislikte neden gerekli · öğrenme türleri · kursun felsefesi</p>
+    </div>
+    <div class="chev">›</div>
+  </div>
+  <div class="week-body">
+    <div class="tags"><span>Makine Öğrenmesi (ML)</span><span>Supervised</span><span>Unsupervised</span><span>Reinforcement</span><span>Problem-driven</span></div>
+
+    <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
+    <p class="lead"><b>Makine Öğrenmesi (Machine Learning, ML)</b>, sistemlerin <mark>açıkça programlanmadan</mark> verideki örüntüleri (patterns) öğrenip karar veya tahmin üretmesini sağlayan algoritmaların incelenmesidir. Mühendislik bakışıyla ML; karmaşık sistemleri modellemek için bir araçtır, fizik-tabanlı ve kural-tabanlı modelleri <b>tamamlar</b> (yerine geçmez).</p>
+
+    <div class="callout key"><span class="lbl">ML ne zaman özellikle işe yarar?</span>
+    Sistem analitik olarak modellenemeyecek kadar karmaşıksa · veri bolsa · belirsizlik (uncertainty) ve gürültü (noise) varsa.</div>
+
+    <h4 class="mini">Mühendis neden ML'e ihtiyaç duyar?</h4>
+    <p>Geleneksel yaklaşım matematiksel modeller, diferansiyel denklemler ve fiziksel yasalardır. ML buna <b>veri-güdümlü modelleme</b>, bilinmeyen ilişkilerin yaklaşıklanması ve belirsizlik altında tahmin/sınıflandırma ekler. Örnek mühendislik uygulamaları: makine arıza tespiti (fault detection), yapısal sağlık izleme, enerji talebi tahmini, görüntü-tabanlı muayene, sinyal/sensör veri analizi. <b>ML mühendislik yargısının yerine geçmez, onu genişletir.</b></p>
+
+    <h4 class="mini">Üç temel öğrenme türü</h4>
+    <table class="tbl">
+      <tr><th>Tür</th><th>Veri</th><th>Amaç</th><th>Örnekler</th></tr>
+      <tr><td><b>Supervised</b> (gözetimli)</td><td>Girdi + doğru çıktı</td><td>x → y eşlemesini öğrenmek</td><td>Regression, Classification</td></tr>
+      <tr><td><b>Unsupervised</b> (gözetimsiz)</td><td>Sadece girdi</td><td>Yapı/örüntü keşfi</td><td>Clustering, Dimensionality reduction</td></tr>
+      <tr><td><b>Reinforcement</b> (pekiştirmeli)</td><td>Etkileşim + ödül</td><td>Zamanla karar verme</td><td>Bu derste sadece <b>kavramsal</b></td></tr>
+    </table>
+
+    <div class="callout key"><span class="lbl">Kursun yaklaşımı</span>
+    Bu ders <b>problem-güdümlü</b>dür, algoritma-güdümlü değil. Her zaman sorulur: Mühendislik problemi ne? Hangi öğrenme türü uyar? Hangi varsayımları yapıyoruz? Sınırlamalar neler? Ayrıca <b>çift yaklaşım</b> kullanılır: (1) Analitik/elle hesap (küçük veri, maliyet fonksiyonları, hata ölçüleri) + (2) Python ile hesaplama (gerçekçi veri, ML kütüphaneleri). Aynı problem önce elle, sonra Python'da çözülür ve karşılaştırılır.</p></div>
+
+    <div class="callout prof"><span class="lbl">🎯 Hocanın sorabileceği</span>
+    "Bu ders <i>ne değildir</i>?" → Saf programlama dersi değil, "black-box" ML dersi değil, derin öğrenme (deep learning) uzmanlık dersi değil. <b>Mühendislik-odaklı, kavramsal, matematiksel olarak motive edilmiş ve uygulama-yönelimli</b>dir. Beklenti: kodu çalıştırmak değil, algoritmanın <b>arkasındaki mantığı</b> anlamak.</div>
+
+    <h3 class="sec"><span class="ic">✅</span> Çoktan Seçmeli Sorular</h3>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S1.</span>Mühendislik-odaklı tanıma göre Makine Öğrenmesi'ni en iyi hangisi açıklar?<span class="diff d1">Kolay</span></p>
+      <button class="opt">Her durumda fiziksel yasaların yerini alan bir simülasyon tekniği<span class="mk"></span></button>
+      <button class="opt">Verileri yalnızca depolayıp sıralayan bir veritabanı yöntemi<span class="mk"></span></button>
+      <button class="opt">Açıkça programlanmadan veriden örüntü öğrenip tahmin/karar üreten algoritmalar<span class="mk"></span></button>
+      <button class="opt">Yalnızca etiketsiz veride kümeleme yapan istatistik dalı<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> ML'in tanımı "açıkça programlanmadan veriden öğrenme"dir. Fiziği "tamamlar", yerine geçmez (A yanlış); kümeleme yalnızca unsupervised'ın bir örneğidir (D çok dar).</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S2.</span>Aşağıdakilerden hangisi ML'in <u>özellikle</u> uygun olduğu durum <b>değildir</b>?<span class="diff d2">Orta</span></p>
+      <button class="opt">Sistem analitik modellenemeyecek kadar karmaşık<span class="mk"></span></button>
+      <button class="opt">Veri bol miktarda mevcut<span class="mk"></span></button>
+      <button class="opt">Belirsizlik ve gürültü var<span class="mk"></span></button>
+      <button class="opt">Sistem birkaç kesin denklemle tam olarak tanımlanabiliyor<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> Sistem zaten kesin denklemlerle tam çözülebiliyorsa, fizik-tabanlı model yeterlidir; ML'e gerek yoktur. ML, karmaşıklık + bol veri + belirsizlik olduğunda parlar.</div>
+    </div>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S3.</span>"ML mühendislik yargısını ______." cümlesini doğru tamamlayan ifade?<span class="diff d1">Kolay</span></p>
+      <button class="opt">tamamen ortadan kaldırır<span class="mk"></span></button>
+      <button class="opt">genişletir; yerine geçmez<span class="mk"></span></button>
+      <button class="opt">yalnızca büyük şirketlerde değiştirir<span class="mk"></span></button>
+      <button class="opt">fiziksel yasalarla çelişir<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> Slaytın anahtar cümlesi: "Machine learning does not replace engineering judgment — it extends it."</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S4.</span>Bir robotun yürümeyi deneme-yanılma ve ödülle öğrenmesi hangi türe örnektir (ve bu derste nasıl işlenir)?<span class="diff d2">Orta</span></p>
+      <button class="opt">Reinforcement Learning — bu derste yalnızca kavramsal olarak<span class="mk"></span></button>
+      <button class="opt">Supervised Learning — matematiksel olarak derinlemesine<span class="mk"></span></button>
+      <button class="opt">Unsupervised Learning — kümeleme ile<span class="mk"></span></button>
+      <button class="opt">Bu bir ML problemi değildir<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> Etkileşim + ödül = Reinforcement Learning. Slayta göre bu derste <b>derinlemesine matematiksel değil, kavramsal</b> işlenir.</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S5.</span>"Problem-driven (problem-güdümlü) ders" ifadesi en çok neyi vurgular?<span class="diff d3">Zor</span></p>
+      <button class="opt">Her zaman en yeni algoritmayı kullanmayı<span class="mk"></span></button>
+      <button class="opt">Kod yazmayı algoritmayı anlamaya tercih etmeyi<span class="mk"></span></button>
+      <button class="opt">Önce mühendislik problemini ve uygun öğrenme türünü/varsayımları sormayı<span class="mk"></span></button>
+      <button class="opt">Yalnızca büyük veri kümeleriyle çalışmayı<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> Problem-güdümlü yaklaşım, algoritmadan önce "problem ne, hangi öğrenme uyar, hangi varsayım/sınırlama var" sorularını merkeze alır.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✍️</span> Açık Uçlu Sorular</h3>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A1.</span>Elinizde bazı makinelerin arızalandığı, bazılarının arızalanmadığı titreşim (vibration) verisi var. Yeni bir makinenin riskli olup olmadığına nasıl karar verirsiniz? Bu bir tahmin (regression) mi yoksa sınıflandırma (classification) mı? Fizik tek başına yeter mi?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Bu bir <b>sınıflandırma (classification)</b> problemidir: çıktı kategoriktir → "riskli / değil" (ya da arızalı/sağlam). Gereken bilgi: her makine için <b>etiketli</b> geçmiş veri (titreşim özellikleri + sonuç), iyi seçilmiş özellikler (genlik, frekans vb.) ve ölçekleme. Yeni makinenin özelliklerini modele verip sınıf tahmini alırız. <b>Fizik tek başına çoğu zaman yetmez</b>: arıza çok faktörlü, gürültülü ve karmaşıktır; veri-güdümlü model belirsizlik altında karar vermeyi sağlar. Yine de fizik, hangi özelliklerin anlamlı olduğunu seçmede (feature engineering) yardımcı olur — yani ML fiziği tamamlar.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A2.</span>Kursta kullanılan "çift yaklaşımı" (dual approach) açıklayın. Neden aynı problem hem elle hem Python ile çözülüyor?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      <b>(1) Analitik / elle hesap:</b> Küçük veri kümeleri üzerinde, maliyet fonksiyonları (cost), hata ölçüleri ve parametre yorumuna odaklanır — algoritmanın <i>arkasındaki matematiği</i> kavratır. <b>(2) Hesaplamalı / Python:</b> Gerçekçi veri kümelerinde standart ML kütüphaneleriyle uygular. Aynı problemin iki yolla çözülmesinin amacı: sonuçları ve yorumları <b>karşılaştırmak</b>, "black-box" kullanımı önlemek ve hem kavramsal hem pratik beceriyi birlikte geliştirmektir.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A3.</span>"Bir algoritmayı ne zaman kullanacağını bilmek, nasıl çalıştığını bilmek kadar önemlidir." Bu ilkeyi bir örnekle açıklayın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Algoritmanın matematiğini bilmek tek başına yetmez; probleme uygunluğunu değerlendirmek gerekir. Örn. <b>Linear regression</b> sistem tanımlama (system identification) için uygundur çünkü çıktı sürekli ve ilişki yaklaşık doğrusaldır; ama sınıf etiketi tahmin edilecekse <b>classification</b> gerekir. İlişki güçlü eğriyse linear model sistematik hata (bias) yapar. Doğru eşleştirme: regresyon→değer tahmini, classification→karar desteği, clustering→sensör verisinde örüntü keşfi. Yanlış algoritma seçimi, mükemmel uygulansa bile yanlış/anlamsız sonuç verir.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WEEK 2 ===================== -->
+<section class="week" data-n="H2" id="week2">
+  <div class="week-head">
+    <div class="wnum">2</div>
+    <div class="htxt">
+      <h2>AI · ML · DL İlişkisi &amp; ML İş Akışı <span class="wkscore" style="display:none;font-size:.7rem;font-weight:700;background:#e9f9ef;color:#15803d;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle"></span></h2>
+      <p class="sub2">temel öğrenme problemi · 6 bileşen · 13 adım · parametre vs hiperparametre</p>
+    </div>
+    <div class="chev">›</div>
+  </div>
+  <div class="week-body">
+    <div class="tags"><span>AI ⊃ ML ⊃ DL</span><span>ŷ = f̂(x;θ)</span><span>6 Bileşen</span><span>13 Adım</span><span>Overfitting</span><span>Hyperparameter</span></div>
+
+    <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
+    <p class="lead"><b>Yapay Zeka (AI)</b> insan-benzeri zeka gerektiren görevleri yapan sistemler alanıdır (akıl yürütme, planlama, arama, algılama, karar verme) ve <b>veriden öğrenmek zorunda değildir</b> (birçok klasik AI kural-tabanlı/sembolik). <b>Makine Öğrenmesi (ML)</b> AI'nin veriden öğrenen alt kümesidir. <b>Derin Öğrenme (DL)</b> ise çok katmanlı sinir ağlarıyla ham veriden karmaşık örüntüleri öğrenen ML alt dalıdır.</p>
+
+    <table class="tbl">
+      <tr><th>Kavram</th><th>AI</th><th>ML</th><th>DL</th></tr>
+      <tr><td>Temel amaç</td><td>Zeki davranış</td><td>Veriden öğrenme</td><td>Hiyerarşik temsil öğrenme</td></tr>
+      <tr><td>Matematiksel temel</td><td>Mantık + Arama + Optimizasyon</td><td>İstatistik + Optimizasyon</td><td>Doğrusal olmayan optimizasyon</td></tr>
+      <tr><td>Veri ihtiyacı</td><td>Opsiyonel</td><td>Gerekli</td><td>Büyük ölçekli gerekli</td></tr>
+      <tr><td>Tipik araçlar</td><td>A*, Minimax</td><td>Regression, SVM</td><td>CNN, Transformer</td></tr>
+    </table>
+    <div class="callout key"><span class="lbl">Kritik ayrım</span>ML, girdi→çıktı eşlemesini öğrenir. DL ise <b>hem eşlemeyi hem de bu eşleme için gereken iç özellikleri (features)</b> ham veriden otomatik öğrenir. Ontolojik olarak <b>AI ⊃ ML ⊃ DL</b>.</div>
+
+    <h4 class="mini">Temel öğrenme problemi</h4>
+    <div class="callout formula">Bilinmeyen gerçek eşleme: <b>y = f(x)</b> &nbsp;→&nbsp; Yaklaşık model: <b>ŷ = f̂(x; θ)</b><br>Amaç eğitim verisini birebir taklit etmek <u>değil</u>, genellenebilir (generalizable) biçimde <b>f̂ ≈ f</b> sağlamaktır.</div>
+
+    <h4 class="mini">ML'in 6 temel bileşeni</h4>
+    <ul class="clean">
+      <li><b>1. Data (Veri):</b> öğrenmenin ham kanıtı; veri yoksa öğrenme yok. Kalitesi performansı doğrudan belirler.</li>
+      <li><b>2. Feature Representation (Özellik temsili):</b> gerçekliğin matematiksel kodlanması; klasik ML'de çoğu zaman en kritik adım (feature engineering).</li>
+      <li><b>3. Model:</b> parametreli matematiksel fonksiyon; hipotez uzayını ve kapasiteyi (bias/variance) belirler.</li>
+      <li><b>4. Loss Function (Kayıp):</b> tahmin hatasını ölçer (MSE, cross-entropy). Loss olmadan optimizasyon olmaz.</li>
+      <li><b>5. Optimization:</b> kaybı en aza indirecek parametreleri ayarlar (Gradient Descent, SGD). Statik modeli öğrenen sisteme dönüştürür.</li>
+      <li><b>6. Generalization:</b> öğrenmenin tanımlayıcı özelliği — görülmemiş veride de iyi çalışmak. İki başarısızlık: <b>overfitting</b> (ezber) ve <b>underfitting</b> (yetersiz kapasite).</li>
+    </ul>
+
+    <h4 class="mini">Sistematik ML iş akışı (13 adım)</h4>
+    <p>1) Problem tanımı → 2) Veri toplama → 3) Ön işleme → 4) Feature engineering → 5) Veri bölme (train/val/test) → 6) Model seçimi → 7) Eğitim → 8) Hiperparametre ayarı → 9) Değerlendirme → 10) Hata analizi → 11) Model yorumlama → 12) Dağıtım (deployment) → 13) İzleme &amp; güncelleme. <b>ML döngüseldir, doğrusal değil</b>: performans düşerse Adım 2/4/6/8'e dönülür.</p>
+
+    <div class="callout key"><span class="lbl">Parametre vs Hiperparametre (sık sınav konusu)</span>
+    <b>Parametre</b>: modelin veriden <u>otomatik öğrendiği</u> değerler (linear regresyonda eğim &amp; kesişim, NN ağırlıkları). <b>Hiperparametre</b>: eğitimden <u>önce uygulayıcının seçtiği</u>, veriden öğrenilmeyen ayarlar (öğrenme oranı, k-NN'de k, ağaç derinliği, regularization gücü). Kısaca: parametre = model <i>ne</i> öğrenir; hiperparametre = model <i>nasıl</i> öğrenir.</div>
+
+    <div class="callout trap"><span class="lbl">⚠️ Klasik tuzak</span>
+    Eğitim doğruluğu %99, test doğruluğu %65 → bu <b>overfitting</b>'tir (ezber, genelleme başarısız). <b>Underfitting</b> ise her ikisinin de düşük ve <i>benzer</i> olmasıdır (örn. %60 vs %58); model ilişkiyi hiç öğrenememiştir (yüksek bias).</div>
+
+    <h3 class="sec"><span class="ic">🧮</span> Çözümlü Örnek — Sistem Sınıflandırma (AI / ML / DL)</h3>
+    <div class="ex">
+      <span class="extitle">🧩 Soru: Her sistemi AI, ML veya DL olarak sınıflandır</span>
+      <table class="tbl">
+        <tr><th>Sistem</th><th>Açıklama</th><th>Sınıf</th><th>Gerekçe</th></tr>
+        <tr><td>A</td><td>Mühendis yazımı kural-tabanlı arıza teşhisi</td><td class="hl">AI</td><td>Veriden öğrenme yok; sembolik/klasik AI</td></tr>
+        <tr><td>B</td><td>SVM ile geçmiş arıza loglarından öğrenme</td><td class="hl">ML</td><td>Veriden karar sınırı öğrenir, derin değil</td></tr>
+        <tr><td>C</td><td>Ham log üstünde çok katmanlı sinir ağı</td><td class="hl">DL</td><td>Hiyerarşik temsil öğrenir</td></tr>
+        <tr><td>D</td><td>k-NN ile benzerliğe göre sınıflama</td><td class="hl">ML</td><td>Parametrik olmayan ML; derin değil</td></tr>
+        <tr><td>E</td><td>A* ile arıza sonrası en iyi rota</td><td class="hl">AI</td><td>Sezgisel arama; veriden öğrenmez</td></tr>
+        <tr><td>F</td><td>Tek katmanlı linear regression (etiketli veri)</td><td class="hl">ML</td><td>Parametreleri veriden öğrenir</td></tr>
+        <tr><td>G</td><td>Transformer (devasa sıralı log)</td><td class="hl">DL</td><td>Attention'lı çok katmanlı derin mimari</td></tr>
+      </table>
+      <div class="res">🔑 Anahtar mantık: Veriden öğreniyor mu? Hayır→AI. Evet ama sığ→ML. Evet ve çok katmanlı/temsil öğrenen→DL.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✅</span> Çoktan Seçmeli Sorular</h3>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S1.</span>AI, ML ve DL'in ontolojik (kapsama) ilişkisi nedir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">DL ⊃ ML ⊃ AI<span class="mk"></span></button>
+      <button class="opt">AI ⊃ ML ⊃ DL<span class="mk"></span></button>
+      <button class="opt">ML ⊃ AI ⊃ DL<span class="mk"></span></button>
+      <button class="opt">Üçü tamamen ayrık kümelerdir<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> DL, ML'in alt dalı; ML de AI'nin alt kümesidir: <b>AI ⊃ ML ⊃ DL</b>.</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S2.</span>A* arama algoritması kullanan, veriden öğrenmeyen bir rota-bulma sistemi hangisidir?<span class="diff d2">Orta</span></p>
+      <button class="opt">DL — çok katmanlı olduğu için<span class="mk"></span></button>
+      <button class="opt">ML — optimizasyon yaptığı için<span class="mk"></span></button>
+      <button class="opt">Hem ML hem DL<span class="mk"></span></button>
+      <button class="opt">AI — sezgisel arama yapar ama veriden öğrenmez<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> A* sezgisel (heuristic) bir arama algoritmasıdır; zeki davranış sergiler fakat veriden öğrenmez → klasik AI.</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S3.</span>ML ile DL arasındaki temel fark hangisinde doğru verilmiştir?<span class="diff d2">Orta</span></p>
+      <button class="opt">ML her zaman DL'den daha doğrudur<span class="mk"></span></button>
+      <button class="opt">DL veri gerektirmez, ML gerektirir<span class="mk"></span></button>
+      <button class="opt">ML eşlemeyi öğrenir; DL hem eşlemeyi hem gerekli özellikleri (features) ham veriden öğrenir<span class="mk"></span></button>
+      <button class="opt">DL yalnızca kural-tabanlıdır<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> Klasik ML'de özellikler elle seçilir; DL özellik çıkarımını da otomatik (hiyerarşik) yapar.</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S4.</span>Eğitim doğruluğu %99, test doğruluğu %65 olan bir model için en olası tanı?<span class="diff d1">Kolay</span></p>
+      <button class="opt">Overfitting (ezber, genelleme başarısız)<span class="mk"></span></button>
+      <button class="opt">Underfitting (yüksek bias)<span class="mk"></span></button>
+      <button class="opt">Mükemmel genelleme<span class="mk"></span></button>
+      <button class="opt">Veri sızıntısı yok, sorun yok<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> Eğitimde çok iyi, testte kötü → ezber → <b>overfitting</b>. Underfitting'de ikisi de düşük ve benzer olurdu (örn. %60 vs %58).</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S5.</span>Aşağıdakilerden hangisi <b>hiperparametre</b>dir (parametre değil)?<span class="diff d3">Zor</span></p>
+      <button class="opt">Linear regression'ın eğimi (slope)<span class="mk"></span></button>
+      <button class="opt">Sinir ağının ağırlıkları (weights)<span class="mk"></span></button>
+      <button class="opt">k-NN'deki komşu sayısı k<span class="mk"></span></button>
+      <button class="opt">Lojistik regresyonun katsayıları<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> Eğim, ağırlık, katsayı → veriden öğrenilen <b>parametre</b>. k, learning rate, ağaç derinliği → önceden seçilen <b>hiperparametre</b>.</div>
+    </div>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S6.</span>ML iş akışında "Asla eğitimde kullanılan veri üzerinde değerlendirme yapma" ilkesi hangi adımla ilgilidir?<span class="diff d2">Orta</span></p>
+      <button class="opt">Feature Engineering<span class="mk"></span></button>
+      <button class="opt">Data Splitting (train/validation/test ayrımı)<span class="mk"></span></button>
+      <button class="opt">Deployment<span class="mk"></span></button>
+      <button class="opt">Problem tanımı<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> Train/validation/test ayrımı olmadan overfitting fark edilmez ve performans şişirilmiş olur. Test seti yalnızca tarafsız son değerlendirme içindir.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✍️</span> Açık Uçlu Sorular</h3>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A1.</span>ML'in 6 temel bileşenini sayın ve her birini bir cümleyle açıklayın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      <b>1) Data:</b> öğrenmenin ham kanıtı, veri yoksa öğrenme yok. <b>2) Feature representation:</b> gerçekliğin matematiksel temsili (feature engineering). <b>3) Model:</b> hipotez uzayını/kapasiteyi belirleyen parametreli fonksiyon. <b>4) Loss function:</b> tahmin hatasını ölçer (MSE, cross-entropy). <b>5) Optimization:</b> kaybı en aza indirecek parametreleri ayarlar (gradient descent). <b>6) Generalization:</b> görülmemiş veride iyi çalışma — başarısızlıkları overfitting ve underfitting.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A2.</span>Parametre ile hiperparametreyi tanımlayın ve ikişer örnek verin. "Aynı veri ve algoritmayla farklı sonuç" neden mümkün?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      <b>Parametre:</b> model eğitim sırasında veriden otomatik öğrenir. Örn: linear regresyonda eğim/kesişim, NN ağırlıkları. <b>Hiperparametre:</b> eğitimden önce uygulayıcının seçtiği, veriden öğrenilmeyen ayarlar. Örn: learning rate, k-NN'de k, ağaç derinliği, regularization gücü. Aynı veri ve algoritmayla bile <b>farklı hiperparametre seçimleri çok farklı sonuçlar</b> verebilir, çünkü hiperparametreler modelin nasıl öğrendiğini (kapasite, esneklik, yakınsama) kontrol eder.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A3.</span>"ML doğrusal değil döngüseldir" ne demek? 13 adımlı iş akışında bu nasıl ortaya çıkar?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      İş akışı tek seferlik bir doğru çizgi değildir. Dağıtımdan (deployment) ve izlemeden (monitoring) sonra gerçek dünya verisi değişebilir (<b>model drift</b>); performans düşünce baştan başlamak yerine ilgili adıma geri dönülür: daha çok/iyi veri (Adım 2), daha iyi özellikler (Adım 4), farklı model (Adım 6) veya yeni hiperparametre ayarı (Adım 8). Böylece sürekli yeniden eğitim (retrain) ile model güncel ve geçerli kalır.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A4.</span>Bir modelin değerlendirme (evaluation), hata analizi (error analysis) ve yorumlama (interpretation) adımları arasındaki farkı açıklayın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      <b>Evaluation:</b> model görülmemiş veride <i>ne kadar iyi</i> çalışıyor (metriklerle özetlenir). <b>Error analysis:</b> model <i>nerede ve nasıl</i> hata yapıyor — hatalar belirli sınıflarda/değer aralıklarında mı yoğunlaşıyor, hangi özellik yanıltıyor; ham sayıları içgörüye çevirir. <b>Interpretation:</b> model <i>neden</i> böyle karar veriyor — özellikle insan hayatını etkileyen, regülasyon gerektiren veya güvenlik-kritik sistemlerde tahminin anlaşılır ve savunulabilir olmasını sağlar.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WEEK 3 ===================== -->
+<section class="week" data-n="H3" id="week3">
+  <div class="week-head">
+    <div class="wnum">3</div>
+    <div class="htxt">
+      <h2>Supervised Learning &amp; Linear Regression <span class="wkscore" style="display:none;font-size:.7rem;font-weight:700;background:#e9f9ef;color:#15803d;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle"></span></h2>
+      <p class="sub2">regresyon · MAE/MSE/RMSE/R² · bias-variance · en küçük kareler (tam çözümlü)</p>
+    </div>
+    <div class="chev">›</div>
+  </div>
+  <div class="week-body">
+    <div class="tags"><span>ŷ = wᵀx + b</span><span>MSE</span><span>R²</span><span>Bias²+Var+Noise</span><span>Least Squares</span><span>Residual</span></div>
+
+    <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
+    <p class="lead"><b>Supervised learning</b>, etiketli veriyle girdi değişkenleri ile bilinen bir çıktı arasındaki <b>fonksiyonel ilişkiyi</b> öğrenir: <i>Output = Function(Input)</i>. 4 temel bileşen: <b>(1) Input/Features</b> (ölçülebilir mühendislik büyüklükleri: titreşim, sıcaklık, basınç…), <b>(2) Output/Label</b> (tahmin hedefi), <b>(3) Training</b> (girdi→doğru çıktıdan ilişkiyi öğrenir), <b>(4) Prediction</b> (yalnızca girdiden çıktı tahmini).</p>
+
+    <div class="callout formula">Veri kümesi: <b>𝒟 = {(xᵢ, yᵢ)}</b> &nbsp;(N örnek, xᵢ∈ℝᵈ, yᵢ=etiket)<br>Model: <b>ŷ = f(x; θ)</b> &nbsp;(θ: öğrenilen parametreler)<br>Eğitim: ortalama kaybı en aza indir → <b>min<sub>θ</sub> (1/N) Σ ℒ(yᵢ, f(xᵢ;θ))</b></div>
+
+    <h4 class="mini">Regresyon (sürekli çıktı) ve değerlendirme metrikleri</h4>
+    <p>Regresyon, hedef değişkenin <b>sürekli ve sayısal</b> olduğu görevdir (f: ℝᵈ→ℝ). Metrikler:</p>
+    <div class="callout formula">
+      <b>MAE</b> = (1/N) Σ |yᵢ − ŷᵢ| &nbsp;→ aykırı değerlere (outlier) daha <b>az</b> duyarlı<br>
+      <b>MSE</b> = (1/N) Σ (yᵢ − ŷᵢ)² &nbsp;→ büyük hataları <b>güçlü</b> cezalandırır<br>
+      <b>RMSE</b> = √MSE &nbsp;→ çıktıyla <b>aynı birimde</b><br>
+      <b>R²</b> = 1 − [Σ(yᵢ−ŷᵢ)² / Σ(yᵢ−ȳ)²] &nbsp;→ açıklanan varyans oranı (1'e yakın = iyi)
+    </div>
+
+    <div class="callout key"><span class="lbl">Bias–Variance ayrışımı</span>
+    Kayıp fonksiyonu hatanın <i>büyüklüğünü</i> söyler; bias–variance hatanın <i>kaynağını</i> açıklar:<br>
+    <b>Error = Bias² + Variance + Noise</b><br>
+    • <b>Bias</b>: model fazla basit/yanlış olduğu için hata · • <b>Variance</b>: modelin eğitim verisine aşırı duyarlılığı · • <b>Noise</b>: rastgelelik/ölçüm belirsizliği (kaçınılmaz).</div>
+
+    <h4 class="mini">Regresyon model türleri (özet tablo)</h4>
+    <table class="tbl">
+      <tr><th>Model</th><th>Doğrusallık</th><th>Overfitting Riski</th><th>Yorumlanabilirlik</th><th>Nonlineer?</th></tr>
+      <tr><td>Linear Regression</td><td>Linear</td><td>Düşük</td><td>Yüksek</td><td>Hayır</td></tr>
+      <tr><td>Polynomial</td><td>Nonlinear</td><td><b>Yüksek</b></td><td>Orta</td><td>Evet</td></tr>
+      <tr><td>Ridge / Lasso</td><td>Linear</td><td>Orta</td><td>Yüksek</td><td>Hayır</td></tr>
+      <tr><td>Decision Tree</td><td>Nonlinear</td><td>Yüksek</td><td>Orta</td><td>Evet</td></tr>
+      <tr><td>Random Forest</td><td>Nonlinear</td><td>Düşük</td><td>Düşük</td><td>Evet</td></tr>
+      <tr><td>Neural Network</td><td>Nonlinear</td><td>Orta</td><td>Düşük</td><td>Evet</td></tr>
+    </table>
+
+    <div class="callout formula"><b>Linear Regression:</b> ŷ = wᵀx + b = w₁x₁ + w₂x₂ + … + wᵈxᵈ + b<br>
+    w: ağırlık (çıktının ilgili özelliğe duyarlılığı), b: bias/kesişim. Geometrik olarak bir doğru/hiperdüzlem uydurur.<br>
+    Eğitim amacı: <b>J(w,b) = (1/N) Σ (yᵢ − (wᵀxᵢ+b))²</b> minimize.</div>
+
+    <h3 class="sec"><span class="ic">🧮</span> Çözümlü Örnek — Reklam Bütçesi → Haftalık Satış</h3>
+    <div class="ex">
+      <span class="extitle">📊 Problem 1: Basit linear regresyon (elle en küçük kareler)</span>
+      <p>x: reklam bütçesi (bin TL), y: haftalık satış (bin TL). 5 hafta: (10,25), (20,28), (30,35), (40,40), (50,45). <b>Eğitim: Hafta 1–4</b>, <b>Test: Hafta 5</b>.</p>
+
+      <div class="step"><span class="sh">Adım 1 — Görev türü</span> Tek sürekli girdi, tek sürekli çıktı, artan eğilim → <b>regresyon</b> (basit linear). Model: ŷ = wx + b.</div>
+
+      <div class="step"><span class="sh">Adım 2 — Ortalamalar (eğitim 1–4)</span>
+      x̄ = (10+20+30+40)/4 = <b>25</b> &nbsp;·&nbsp; ȳ = (25+28+35+40)/4 = <b>32</b></div>
+
+      <div class="step"><span class="sh">Adım 3 — Sapma tablosu</span>
+      <table class="tbl">
+        <tr><th>xᵢ</th><th>yᵢ</th><th>(xᵢ−x̄)</th><th>(yᵢ−ȳ)</th><th>(xᵢ−x̄)(yᵢ−ȳ)</th><th>(xᵢ−x̄)²</th></tr>
+        <tr><td>10</td><td>25</td><td>−15</td><td>−7</td><td>105</td><td>225</td></tr>
+        <tr><td>20</td><td>28</td><td>−5</td><td>−4</td><td>20</td><td>25</td></tr>
+        <tr><td>30</td><td>35</td><td>5</td><td>3</td><td>15</td><td>25</td></tr>
+        <tr><td>40</td><td>40</td><td>15</td><td>8</td><td>120</td><td>225</td></tr>
+        <tr><td colspan="4" style="text-align:right"><b>Σ</b></td><td><b>260</b></td><td><b>500</b></td></tr>
+      </table></div>
+
+      <div class="step"><span class="sh">Adım 4 — Eğim ve kesişim</span>
+      w = Σ(xᵢ−x̄)(yᵢ−ȳ) / Σ(xᵢ−x̄)² = 260/500 = <b>0.52</b><br>
+      b = ȳ − w·x̄ = 32 − 0.52×25 = 32 − 13 = <b>19</b></div>
+      <div class="res">✅ Eğitilmiş model: <b>ŷ = 0.52·x + 19</b></div>
+
+      <div class="step"><span class="sh">Adım 5 — Yeni tahminler</span>
+      x=15 → ŷ = 0.52×15+19 = <b>26.8</b> bin TL &nbsp;·&nbsp; x=35 → ŷ = 0.52×35+19 = <b>37.2</b> bin TL</div>
+
+      <div class="step"><span class="sh">Adım 6 — Eğitim artıkları (residual rᵢ = yᵢ − ŷᵢ)</span>
+      <table class="tbl">
+        <tr><th>x</th><th>y</th><th>ŷ</th><th>r</th></tr>
+        <tr><td>10</td><td>25</td><td>24.2</td><td>0.8</td></tr>
+        <tr><td>20</td><td>28</td><td>29.4</td><td>−1.4</td></tr>
+        <tr><td>30</td><td>35</td><td>34.6</td><td>0.4</td></tr>
+        <tr><td>40</td><td>40</td><td>39.8</td><td>0.2</td></tr>
+      </table></div>
+
+      <div class="step"><span class="sh">Adım 7 — Eğitim metrikleri</span>
+      MAE = (0.8+1.4+0.4+0.2)/4 = <b>0.70</b><br>
+      MSE = (0.64+1.96+0.16+0.04)/4 = 2.8/4 = <b>0.70</b> &nbsp;→&nbsp; RMSE = √0.70 = <b>0.8367</b><br>
+      SS<sub>res</sub>=2.8, SS<sub>tot</sub>=Σ(yᵢ−ȳ)²=49+16+9+64=138 → R² = 1 − 2.8/138 = <b>0.9797</b></div>
+
+      <div class="step"><span class="sh">Adım 8 — Test (Hafta 5: x=50, y=45)</span>
+      ŷ = 0.52×50+19 = <b>45.0</b> → residual = 45−45 = <b>0</b> → test MAE/MSE/RMSE = 0 (bu noktada kusursuz).</div>
+
+      <div class="res">📌 Residual analizi: artıklar 0 etrafında, işaretler karışık, monoton örüntü yok → <b>linear model bu aralık için yeterli (adequate)</b>. R²≈0.98 güçlü uyum.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✅</span> Çoktan Seçmeli Sorular</h3>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S1.</span>Bir problemde çıktı "sürekli sayısal bir değer" ise görev türü nedir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">Classification<span class="mk"></span></button>
+      <button class="opt">Regression<span class="mk"></span></button>
+      <button class="opt">Clustering<span class="mk"></span></button>
+      <button class="opt">Reinforcement<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> Sürekli/sayısal çıktı → regresyon. Kategorik çıktı → classification.</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S2.</span>Yukarıdaki örnekte Σ(xᵢ−x̄)(yᵢ−ȳ)=260 ve Σ(xᵢ−x̄)²=500 ise eğim w kaçtır?<span class="diff d2">Orta</span></p>
+      <button class="opt">2.60<span class="mk"></span></button>
+      <button class="opt">1.92<span class="mk"></span></button>
+      <button class="opt">0.52<span class="mk"></span></button>
+      <button class="opt">19.0<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> w = 260/500 = 0.52. (19 ise kesişim b'dir.)</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S3.</span>R² = 0.9797 sonucu ne anlama gelir?<span class="diff d2">Orta</span></p>
+      <button class="opt">Model hatalarının %97.97'si gürültüdür<span class="mk"></span></button>
+      <button class="opt">Test doğruluğu %97.97'dir<span class="mk"></span></button>
+      <button class="opt">Modelin %2'si doğrudur<span class="mk"></span></button>
+      <button class="opt">Hedefteki varyansın ~%98'i model tarafından açıklanıyor (güçlü uyum)<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> R², modelin hedef değişkenin varyansının ne kadarını açıkladığını ölçer; 1'e yakın değer güçlü uyumdur.</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S4.</span>Aykırı değerlerin (outlier) etkisini güçlü cezalandıran ve karesel olan metrik hangisidir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">MSE<span class="mk"></span></button>
+      <button class="opt">MAE<span class="mk"></span></button>
+      <button class="opt">R²<span class="mk"></span></button>
+      <button class="opt">Accuracy<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> MSE büyük hataları kareyle büyütür → outlier'a duyarlı. MAE mutlak değer kullandığı için daha az duyarlıdır.</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S5.</span>Bias–Variance ayrışımına göre toplam hata nasıl yazılır?<span class="diff d2">Orta</span></p>
+      <button class="opt">Error = Bias + Variance<span class="mk"></span></button>
+      <button class="opt">Error = Bias × Variance × Noise<span class="mk"></span></button>
+      <button class="opt">Error = Bias² + Variance + Noise<span class="mk"></span></button>
+      <button class="opt">Error = Variance² + Bias + Noise<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> Error = Bias² + Variance + Noise. Bias karelidir; Noise kaçınılmazdır.</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S6.</span>Hangi model "Nonlinear + Yüksek overfitting riski" olarak tablolanmıştır?<span class="diff d3">Zor</span></p>
+      <button class="opt">Linear Regression<span class="mk"></span></button>
+      <button class="opt">Ridge<span class="mk"></span></button>
+      <button class="opt">Random Forest<span class="mk"></span></button>
+      <button class="opt">Polynomial Regression<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> Polynomial: nonlinear ve yüksek overfitting riski. (Decision Tree de yüksek risklidir ama seçenekte yok; Random Forest düşük risklidir.)</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S7.</span>Çıktıyla aynı birimde olan ve yorumlaması kolay hata metriği hangisidir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">RMSE<span class="mk"></span></button>
+      <button class="opt">MSE<span class="mk"></span></button>
+      <button class="opt">R²<span class="mk"></span></button>
+      <button class="opt">Log-loss<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> RMSE = √MSE; karekök, hatayı tekrar hedefin birimine döndürür.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✍️</span> Açık Uçlu Sorular</h3>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A1.</span>Reklam örneğinde verileri neden eğitim (Hafta 1–4) ve test (Hafta 5) olarak ayırdık? Eğitim hatası tek başına neden yeterli değildir?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Eğitim hatası modelin <i>gördüğü</i> veriye uyumunu ölçer; ama amaç <b>genelleme</b>dir — gelecekteki/görülmemiş haftalarda da iyi tahmin. Test seti bu görülmemiş haftaları simüle eder ve <b>tarafsız</b> performans verir. Yalnızca eğitim hatasına bakılırsa overfitting fark edilmez ve performans olduğundan iyi görünür. Burada test (Hafta 5) residual'ı 0 çıktı → model bu aralıkta gerçekten iyi genelliyor.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A2.</span>Toplam hata 20 olan bir tahmin için bias–variance–noise ayrışımını örnekle açıklayın (y=100, ŷ=80).</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Kayıp fonksiyonu "hata 20" der ama <i>nedenini</i> söylemez. Bias–variance şöyle açıklar: bu 20 birim hatanın örn. <b>10 birimi bias</b> (model fazla basit/yanlış), <b>7 birimi variance</b> (eğitim verisine aşırı duyarlılık), <b>3 birimi noise</b> (ölçüm belirsizliği/rastgelelik). Böylece hatayı azaltmak için ne yapılacağı belli olur: bias yüksekse daha esnek model, variance yüksekse regularization/daha çok veri.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A3.</span>Residual analizinde linear modelin "yeterli" olduğunu söylemek için artıklarda neye bakarız?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Artıklar (residuals) <b>0 etrafında rastgele dağılmalı</b>: küçük büyüklükte, işaretleri karışık (+/−) ve <b>monoton/sistematik bir örüntü içermemeli</b>. Eğer artıklar x büyüdükçe sürekli artıyor veya bir eğrilik (curvature) gösteriyorsa, linear model yetersizdir ve polinom/daha esnek modele geçilmelidir. Reklam örneğinde artıklar (0.8, −1.4, 0.4, 0.2) küçük ve örüntüsüz → model yeterli.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A4.</span>Linear regresyonda w (ağırlık) ve b (bias) neyi temsil eder? Reklam modelinde (ŷ=0.52x+19) bunları yorumlayın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      <b>w</b> = çıktının ilgili girdiye duyarlılığı (eğim): reklam bütçesi 1 bin TL artınca satışın ~<b>0.52 bin TL</b> arttığını gösterir. <b>b</b> = kesişim (intercept): reklam=0 iken modelin öngördüğü temel satış (~<b>19 bin TL</b>). Geometrik olarak w doğrunun eğimi, b ise doğruyu dikey kaydıran sabittir.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WEEK 4 ===================== -->
+<section class="week" data-n="H4" id="week4">
+  <div class="week-head">
+    <div class="wnum">4</div>
+    <div class="htxt">
+      <h2>Polynomial Regression <span class="wkscore" style="display:none;font-size:.7rem;font-weight:700;background:#e9f9ef;color:#15803d;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle"></span></h2>
+      <p class="sub2">design matrix · normal equation · derece seçimi · overfitting U-eğrisi (tam çözümlü)</p>
+    </div>
+    <div class="chev">›</div>
+  </div>
+  <div class="week-body">
+    <div class="tags"><span>φ(x)=[1,x,x²,…]</span><span>Normal Equation</span><span>Underfit↔Overfit</span><span>U-curve</span><span>H₁⊂H₂⊂H₃</span></div>
+
+    <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
+    <p class="lead"><b>Polynomial regression</b> özünde hâlâ linear regression'dır; sadece girdiyi <b>polinom terimlerine genişletip</b> bu genişletilmiş özelliklere doğrusal model uydururuz. Yani parametrelerde (w) doğrusaldır, x'te doğrusal değildir.</p>
+    <div class="callout formula">Özellik haritası: φ(x) = [1, x, x², …, xᵈ] &nbsp;→&nbsp; Model: <b>ŷ = w₀ + w₁x + w₂x² + … + wᵈxᵈ</b><br>
+    Least squares: J(w) = (1/n)·‖y − Xw‖² &nbsp;·&nbsp; <b>Normal Equation: w = (XᵀX)⁻¹Xᵀy</b> (XᵀX tersinirse)<br>
+    Pratikte sayısal kararlı çözücüler (QR/SVD, np.linalg.lstsq) tercih edilir.</div>
+
+    <div class="callout key"><span class="lbl">Derece d esnekliği kontrol eder</span>
+    Düşük d → <b>underfitting</b> (yüksek bias) · Yüksek d → <b>overfitting</b> (yüksek variance). Derece <b>validation/cross-validation</b> ile seçilir. Yüksek derecelerde ölçekleme (standardize) ve regularization (Ridge/Lasso) yaygındır.</div>
+
+    <h3 class="sec"><span class="ic">🧮</span> Çözümlü Örnek — Sensör Kalibrasyonu (Derece 1/2/3)</h3>
+    <div class="ex">
+      <span class="extitle">🌡️ Voltaj (x) → Sıcaklık (y), 10 ölçüm · Eğitim 7 / Validation 3</span>
+      <p>Eğitim x={0.2…1.4}, Validation x={1.6, 1.8, 2.0} (eğitim aralığının <b>dışında</b> — extrapolation).</p>
+
+      <h4 class="mini">Derece 1 — elle en küçük kareler (2×2 sistem)</h4>
+      <div class="step"><span class="sh">Toplamlar (n=7)</span> S<sub>x</sub>=5.6, S<sub>xx</sub>=5.6, S<sub>y</sub>=323.956, S<sub>xy</sub>=296.6368</div>
+      <div class="step"><span class="sh">Normal denklemler</span>
+      [7&nbsp;&nbsp;5.6 ; 5.6&nbsp;&nbsp;5.6]·[w₀;w₁] = [323.956 ; 296.6368]<br>
+      Determinant: Δ = 7·5.6 − 5.6² = 39.2 − 31.36 = <b>7.84</b><br>
+      w₀ = (323.956·5.6 − 5.6·296.6368)/7.84 = <b>19.5137</b><br>
+      w₁ = (7·296.6368 − 5.6·323.956)/7.84 = <b>33.4571</b></div>
+      <div class="res">Derece 1: <b>ŷ = 19.5137 + 33.4571·x</b> → Train MSE=0.1694, Val MSE=2.6933, Train R²=0.99906, Val R²=0.88455</div>
+
+      <h4 class="mini">Derece 2 &amp; 3 (3×3 ve 4×4 sistem — aynı normal denklem mantığı)</h4>
+      <div class="res">Derece 2: ŷ = 19.9809 + 31.8993x + 0.9738x² → Train MSE=0.1512, Val MSE=6.3910</div>
+      <div class="res">Derece 3: ŷ = 21.5571 + 22.9246x + 14.1071x² − 5.4722x³ → Train MSE=0.0920, Val MSE=6.5772</div>
+
+      <h4 class="mini">Karşılaştırma</h4>
+      <table class="tbl">
+        <tr><th>Derece</th><th>Parametre</th><th>Train MSE</th><th>Val MSE</th><th>Train R²</th><th>Val R²</th></tr>
+        <tr class="hl"><td>1</td><td>2</td><td>0.1694</td><td><b>2.6933</b> ✅</td><td>0.99906</td><td>0.88455</td></tr>
+        <tr><td>2</td><td>3</td><td>0.1512</td><td>6.3910</td><td>0.99920</td><td>0.72600</td></tr>
+        <tr><td>3</td><td>4</td><td><b>0.0920</b></td><td>6.5772</td><td>0.99949</td><td>0.71807</td></tr>
+      </table>
+      <div class="res">📌 <b>Ders:</b> Train MSE derece arttıkça <u>monoton azalır</u> (H₁⊂H₂⊂H₃, daha büyük hipotez uzayı). Ama Val MSE <u>azalmıyor</u> — bu klasik <b>overfitting</b> örüntüsü. Validation noktaları eğitim aralığının dışında (extrapolation) olduğundan yüksek derecede <b>variance baskın</b>; en iyi genelleme <b>Derece 1</b>. Optimal derece, <i>eğitim hatasını değil validation hatasını</i> en aza indirendir.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✅</span> Çoktan Seçmeli Sorular</h3>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S1.</span>Polynomial regression hakkında doğru ifade hangisidir?<span class="diff d2">Orta</span></p>
+      <button class="opt">Parametrelerde doğrusal olmadığı için least squares uygulanamaz<span class="mk"></span></button>
+      <button class="opt">Linear regression'la hiçbir ilgisi yoktur<span class="mk"></span></button>
+      <button class="opt">Özünde linear regression'dır; özellikler polinom terimlerine genişletilir (parametrelerde doğrusal)<span class="mk"></span></button>
+      <button class="opt">Yalnızca sınıflandırmada kullanılır<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> Polinom regresyon, genişletilmiş özellikler [1,x,x²,…] üstünde <b>doğrusal</b> bir modeldir; bu yüzden normal equation/least squares uygulanır.</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S2.</span>Polinom regresyonun kapalı-form (normal equation) çözümü nedir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">w = (XᵀX)⁻¹Xᵀy<span class="mk"></span></button>
+      <button class="opt">w = XᵀX·y<span class="mk"></span></button>
+      <button class="opt">w = (XXᵀ)⁻¹y<span class="mk"></span></button>
+      <button class="opt">w = Xy⁻¹<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> Normal equation: w = (XᵀX)⁻¹Xᵀy (XᵀX tersinir olduğunda).</div>
+    </div>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S3.</span>Polinom derecesi arttıkça <b>eğitim (training)</b> hatası nasıl davranır?<span class="diff d2">Orta</span></p>
+      <button class="opt">Her zaman artar<span class="mk"></span></button>
+      <button class="opt">Monoton olarak azalır (asla artmaz)<span class="mk"></span></button>
+      <button class="opt">Sabit kalır<span class="mk"></span></button>
+      <button class="opt">Önce artar sonra azalır<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> H₁⊂H₂⊂H₃ olduğundan daha yüksek derece daha büyük hipotez uzayı → eğitim residual'ı en az o kadar küçülür; <b>train MSE asla artmaz</b>.</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S4.</span>Derece arttıkça <b>validation</b> hatası tipik olarak hangi biçimi izler ve optimal derece nasıl seçilir?<span class="diff d2">Orta</span></p>
+      <button class="opt">Sürekli azalır; en yüksek derece seçilir<span class="mk"></span></button>
+      <button class="opt">Sürekli artar; en düşük derece seçilir<span class="mk"></span></button>
+      <button class="opt">Sabittir; derece önemsizdir<span class="mk"></span></button>
+      <button class="opt">U biçimlidir; validation hatasını minimum yapan derece seçilir<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> Validation hatası U-şeklindedir (önce düşer, sonra overfitting'le yükselir). Optimal derece = validation hatasını minimize eden.</div>
+    </div>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S5.</span>Bu örnekte (validation x>1.6, eğitim x≤1.4) yüksek dereceli modellerin validation hatası neden kötüleşti?<span class="diff d3">Zor</span></p>
+      <button class="opt">Eğitim hatası da yükseldiği için<span class="mk"></span></button>
+      <button class="opt">Validation noktaları eğitim aralığının dışında (extrapolation) ve yüksek derecede variance baskın olduğu için<span class="mk"></span></button>
+      <button class="opt">R² hesabı yanlış olduğu için<span class="mk"></span></button>
+      <button class="opt">Polinom terimleri her zaman daha iyidir, sonuç hatalıdır<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> Eğitim verisi tüm aralığı kapsamadığından validation extrapolation bölgesindedir; yüksek derece yüksek variance + polinom patlaması → kötü genelleme.</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S6.</span>Düşük derece (örn. derece 1) hangi risk/özellikle ilişkilidir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">Yüksek bias / underfitting eğilimi ama yüksek kararlılık (düşük variance)<span class="mk"></span></button>
+      <button class="opt">Yüksek variance / overfitting<span class="mk"></span></button>
+      <button class="opt">Sıfır hata garantisi<span class="mk"></span></button>
+      <button class="opt">Sayısal kararsızlık<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> Düşük derece basit/kararlıdır (düşük variance) ama ilişki eğriyse underfit eder (yüksek bias).</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✍️</span> Açık Uçlu Sorular</h3>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A1.</span>"Polinom derecesi arttıkça eğitim MSE asla artmaz" iddiasını hipotez uzayı (H₁⊂H₂⊂H₃) kavramıyla açıklayın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Derece-1 modelinin yapabildiği her uyum, derece-2 modelinin de yapabileceği bir alt kümedir (ek katsayıyı 0 alarak). Yani hipotez uzayları iç içedir: <b>H₁ ⊆ H₂ ⊆ H₃</b>. Daha büyük uzayda en kötü ihtimalle aynı çözüm bulunur, genelde daha küçük residual bulunur. Bu yüzden derece arttıkça eğitim MSE <b>matematiksel olarak artamaz</b> — düşer veya sabit kalır. Ancak bu, genellemenin iyileşeceği anlamına gelmez.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A2.</span>Validation hatasının U-şeklini ve optimal derece seçimini açıklayın. Neden eğitim hatasına göre seçim yapmayız?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Derece arttıkça önce bias düşer (model eğriliği yakalar) → validation hatası iner; bir noktadan sonra variance baskın olur (model gürültüyü ezberler) → validation hatası yükselir. Sonuç U-şekli. <b>Optimal derece = U'nun dibi (validation minimum)</b>. Eğitim hatasına göre seçemeyiz çünkü o monoton düşer ve hep en yüksek dereceyi seçtirir → overfitting. Genelleme ancak validation/test ile ölçülür.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A3.</span>Bu örnekte derece 3 en düşük eğitim MSE'sine (0.0920) sahip olmasına rağmen neden derece 1'i tercih ettik?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Çünkü model seçimi <b>genelleme</b>ye göre yapılır, eğitim uyumuna göre değil. Derece 1'in validation MSE'si (2.69) en düşük; derece 2 (6.39) ve derece 3 (6.58) çok daha kötü. Validation noktaları eğitim aralığının dışında olduğundan yüksek dereceli polinomlar extrapolation'da kontrolsüz davranır (yüksek variance, polinom patlaması, ill-conditioned XᵀX). Eğitim verisi tüm aralığı kapsamadığından, en kararlı ve en iyi genelleyen model derece 1'dir.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WEEK 5 ===================== -->
+<section class="week" data-n="H5" id="week5">
+  <div class="week-head">
+    <div class="wnum">5</div>
+    <div class="htxt">
+      <h2>Ridge Regression &amp; Sınıflandırmaya Giriş <span class="wkscore" style="display:none;font-size:.7rem;font-weight:700;background:#e9f9ef;color:#15803d;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle"></span></h2>
+      <p class="sub2">regularization · λ seçimi · penalty matrix D · poly vs ridge (tam çözümlü)</p>
+    </div>
+    <div class="chev">›</div>
+  </div>
+  <div class="week-body">
+    <div class="tags"><span>Loss = MSE + λ‖w‖²</span><span>w=(XᵀX+λI)⁻¹Xᵀy</span><span>λ &amp; bias-variance</span><span>Logistic/kNN/Tree/SVM</span></div>
+
+    <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
+    <p class="lead"><b>Neden regularization?</b> Polinom regresyon esnektir ama 4 zayıflığı vardır: (a) <b>overfitting</b>, (b) <b>büyük katsayılar</b>, (c) <b>multicollinearity</b> (x², x³ sütunları çok korelasyonlu → XᵀX neredeyse tekil), (d) <b>kötü extrapolation</b>. Çözüm: <b>Ridge regression</b>.</p>
+
+    <div class="callout formula"><b>Ridge amaç fonksiyonu:</b> min<sub>w</sub> Σ(yᵢ − ŷᵢ)² + λ·Σwⱼ² &nbsp;⟺&nbsp; <b>Loss = MSE + λ‖w‖²</b><br>
+    λ &gt; 0: regularization parametresi. Model yalnızca hatayı değil, katsayıları da küçük tutmaya çalışır.<br>
+    <b>Kapalı form:</b> w = (XᵀX + λI)⁻¹Xᵀy &nbsp;→ λI matrisi koşullamayı (conditioning) ve sayısal kararlılığı iyileştirir.</div>
+
+    <div class="callout key"><span class="lbl">λ ve bias–variance dengesi</span>
+    <table class="tbl" style="margin:6px 0 0">
+      <tr><th>λ</th><th>Bias</th><th>Variance</th></tr>
+      <tr><td>küçük</td><td>düşük</td><td>yüksek</td></tr>
+      <tr><td>orta</td><td>dengeli</td><td>dengeli</td></tr>
+      <tr><td>büyük</td><td>yüksek</td><td>düşük</td></tr>
+    </table>
+    λ <b>cross-validation</b> ile seçilir: adaylar {0.01, 0.1, 1, 10, 100}, validation MSE'yi minimum yapan λ* alınır.</div>
+
+    <div class="callout trap"><span class="lbl">⚠️ Intercept'i cezalandırma!</span>
+    Kesişim (β₀) modelin karmaşıklığını artırmaz, sadece eğriyi dikey kaydırır. Bu yüzden penalty matrisi D kullanılır: D'nin ilk köşegen elemanı <b>0</b> (intercept cezasız), diğerleri <b>1</b>. Böylece sadece eğim katsayıları (β₁², β₂², …) cezalanır.</div>
+
+    <h3 class="sec"><span class="ic">🧮</span> Çözümlü Örnek — Polynomial vs Ridge (kuadratik)</h3>
+    <div class="ex">
+      <span class="extitle">⚙️ Aktüatör: kontrol sinyali x → yer değiştirme y · λ=2</span>
+      <p>Eğitim: (0,1),(1,2),(2,6),(3,12) · Validation: (4,20),(5,30). Model: ŷ = a + bx + cx².</p>
+
+      <div class="step"><span class="sh">Polynomial (cezasız)</span>
+      XᵀX = [[4,6,14],[6,14,36],[14,36,98]], Xᵀy = [21,50,136]<br>
+      Çözüm: a=0.95, b=−0.05, c=1.25 → <b>ŷ = 0.95 − 0.05x + 1.25x²</b></div>
+
+      <div class="step"><span class="sh">Ridge (λ=2, D=diag(0,1,1))</span>
+      XᵀX + λD = [[4,6,14],[6,<b>16</b>,36],[14,36,<b>100</b>]] (sadece köşegen +2; ilk eleman değişmez)<br>
+      Çözüm: a=0.9697, b=0.2727, c=1.1061 → <b>ŷ = 0.9697 + 0.2727x + 1.1061x²</b></div>
+
+      <div class="step"><span class="sh">Validation tahminleri (x=4,5; gerçek 20,30)</span>
+      Poly: 20.75, 31.95 &nbsp;|&nbsp; Ridge: 19.758, 29.985 → <b>Ridge gerçeğe çok daha yakın</b></div>
+
+      <table class="tbl">
+        <tr><th>Model</th><th>Train MSE</th><th>Val MSE</th></tr>
+        <tr><td>Polynomial</td><td><b>0.0125</b> (daha düşük)</td><td>2.1825</td></tr>
+        <tr class="hl"><td>Ridge</td><td>0.0481</td><td><b>0.0295</b> ✅ (çok daha düşük)</td></tr>
+      </table>
+      <div class="res">📌 Polinom eğitimde daha agresif uyuyor (düşük train MSE) ama validation'da çok kötü. Ridge biraz daha yüksek train hatası karşılığında <b>dramatik biçimde daha iyi genelliyor</b>. Mühendislikte (nonlineer sistem, az veri, kararlılık önemliyse) ridge tercih edilir.</div>
+    </div>
+
+    <h4 class="mini">Sınıflandırma modellerine genel bakış (giriş)</h4>
+    <table class="tbl">
+      <tr><th>Model</th><th>Güçlü yön</th><th>Zayıf yön</th></tr>
+      <tr><td>Logistic Regression</td><td>basit, yorumlanabilir, olasılık çıktısı</td><td>doğrusal karar sınırı</td></tr>
+      <tr><td>k-NN</td><td>esnek, eğitim yok (lazy)</td><td>tahmin yavaş, ölçeklemeye duyarlı</td></tr>
+      <tr><td>Decision Tree</td><td>yorumlanabilir, nonlineer</td><td>overfit eğilimli</td></tr>
+      <tr><td>SVM</td><td>güçlü genelleme, yüksek boyut</td><td>ayar zor, az yorumlanabilir</td></tr>
+    </table>
+    <div class="callout formula">Impurity ölçüleri (Decision Tree): <b>Gini = 1 − Σpₖ²</b> &nbsp;·&nbsp; <b>Entropy = −Σpₖ·log₂(pₖ)</b><br>
+    Regresyon vs Classification: çıktı sürekli↔kategorik, kayıp MSE/MAE↔cross-entropy/hinge, metrik RMSE/R²↔accuracy/precision/recall.</div>
+
+    <h3 class="sec"><span class="ic">✅</span> Çoktan Seçmeli Sorular</h3>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S1.</span>Ridge regression'ın kayıp fonksiyonu nedir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">Loss = MSE − λ‖w‖²<span class="mk"></span></button>
+      <button class="opt">Loss = MSE × λ<span class="mk"></span></button>
+      <button class="opt">Loss = MSE + λ‖w‖²<span class="mk"></span></button>
+      <button class="opt">Loss = MAE + λ|w|<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> Ridge, MSE'ye katsayıların karelerinin toplamını (L2 cezası) ekler: MSE + λ‖w‖². (L1 cezası |w| ise Lasso'dur.)</div>
+    </div>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S2.</span>Ridge'in kapalı-form çözümü hangisidir?<span class="diff d2">Orta</span></p>
+      <button class="opt">w = (XᵀX)⁻¹Xᵀy<span class="mk"></span></button>
+      <button class="opt">w = (XᵀX + λI)⁻¹Xᵀy<span class="mk"></span></button>
+      <button class="opt">w = (XᵀX − λI)⁻¹Xᵀy<span class="mk"></span></button>
+      <button class="opt">w = λ(XᵀX)⁻¹y<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> w = (XᵀX + λI)⁻¹Xᵀy. λI eklemek matrisi daha iyi koşullu (tersinir) yapar.</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S3.</span>Ridge'de neden intercept (β₀) cezalandırılmaz?<span class="diff d3">Zor</span></p>
+      <button class="opt">Çünkü intercept her zaman sıfırdır<span class="mk"></span></button>
+      <button class="opt">Çünkü intercept variance'ı artırır<span class="mk"></span></button>
+      <button class="opt">Çünkü intercept eğimi belirler<span class="mk"></span></button>
+      <button class="opt">Çünkü model karmaşıklığını artırmaz, sadece eğriyi dikey kaydırır<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> Intercept fonksiyonun karmaşıklığını etkilemez, yalnızca dikey kaydırır; cezalandırmak gereksizdir. Bu yüzden D matrisinin ilk köşegeni 0'dır.</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S4.</span>λ çok büyük seçilirse modelin bias ve variance'ı nasıl olur?<span class="diff d2">Orta</span></p>
+      <button class="opt">Yüksek bias, düşük variance<span class="mk"></span></button>
+      <button class="opt">Düşük bias, yüksek variance<span class="mk"></span></button>
+      <button class="opt">İkisi de sıfır<span class="mk"></span></button>
+      <button class="opt">İkisi de yüksek<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> Büyük λ katsayıları aşırı küçültür → model fazla basit → yüksek bias, düşük variance.</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S5.</span>Çözümlü örnekte poly (Val MSE=2.1825) ve ridge (Val MSE=0.0295) için doğru yorum?<span class="diff d2">Orta</span></p>
+      <button class="opt">Polinom her açıdan daha iyi<span class="mk"></span></button>
+      <button class="opt">İkisi de aynı performansta<span class="mk"></span></button>
+      <button class="opt">Ridge daha iyi genelliyor; biraz daha yüksek train hatasına karşılık çok daha düşük validation hatası<span class="mk"></span></button>
+      <button class="opt">Ridge overfit etmiş<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> Klasik regularization avantajı: küçük bir eğitim hatası artışı karşılığında çok daha iyi genelleme.</div>
+    </div>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S6.</span>Regularization parametresi λ tipik olarak nasıl seçilir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">Her zaman 0 alınır<span class="mk"></span></button>
+      <button class="opt">Cross-validation ile (validation hatasını minimum yapan değer)<span class="mk"></span></button>
+      <button class="opt">Eğitim hatasını minimum yapan değer<span class="mk"></span></button>
+      <button class="opt">Rastgele atanır<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> λ* = arg min MSE<sub>validation</sub>(λ); adaylar denenip cross-validation ile seçilir.</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S7.</span>Decision Tree'de impurity (saflık) ölçüsü hangisidir?<span class="diff d2">Orta</span></p>
+      <button class="opt">RMSE<span class="mk"></span></button>
+      <button class="opt">R²<span class="mk"></span></button>
+      <button class="opt">Sigmoid<span class="mk"></span></button>
+      <button class="opt">Gini = 1 − Σpₖ² (ve Entropy)<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> Ağaçlar impurity'yi Gini veya Entropy ile ölçer; RMSE/R² regresyon metrikleridir.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✍️</span> Açık Uçlu Sorular</h3>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A1.</span>Polinom regresyonun hangi 4 problemini gidermek için regularization kullanılır? Ridge bunu nasıl yapar?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      4 problem: <b>(1) overfitting</b> (yüksek derece eğitime aşırı uyar), <b>(2) büyük katsayılar</b> (yüksek dereceli terimler dev ağırlıklar üretir), <b>(3) multicollinearity</b> (x, x², x³ çok korelasyonlu → XᵀX neredeyse tekil/ill-conditioned), <b>(4) kötü extrapolation</b>. Ridge, kayba λ‖w‖² ekleyerek katsayıları küçük tutar; ayrıca (XᵀX+λI) ile matrisi daha iyi koşullu yapar → daha kararlı, daha iyi genelleyen model.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A2.</span>Penalty matrisi D nedir ve neden D=diag(0,1,1,…) şeklindedir? Örnekteki XᵀX+λD'yi açıklayın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      D, hangi katsayıların cezalanacağını belirleyen köşegen matristir. İlk köşegen elemanı <b>0</b>'dır çünkü intercept (β₀) cezalandırılmaz; kalan elemanlar <b>1</b>'dir çünkü eğim katsayıları cezalanır. Örnekte XᵀX=[[4,6,14],[6,14,36],[14,36,98]] iken λ=2 ile XᵀX+λD = [[4,6,14],[6,16,36],[14,36,100]] olur: yalnızca (2,2) ve (3,3) köşegenlerine +2 eklenir, (1,1) değişmez. Böylece ceza yalnızca β₁²+β₂² terimlerine uygulanır.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A3.</span>Mühendislik açısından ridge ne zaman tercih edilir? Çözümlü örnekteki sonuca dayanarak açıklayın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Ridge; sistem nonlineer, veri sınırlı, model kararlılığı ve extrapolation/validation performansı önemliyse tercih edilir. Örnekte polinom eğitim noktalarına agresif uydu (Train MSE 0.0125) ama validation'da kötüydü (2.1825). Ridge biraz daha yüksek eğitim hatası (0.0481) karşılığında validation MSE'yi 0.0295'e düşürdü — yani görülmemiş veriyle çok daha tutarlı. Bu nedenle bu problemde daha iyi <b>mühendislik modeli</b> ridge'dir.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WEEK 6 ===================== -->
+<section class="week" data-n="H6" id="week6">
+  <div class="week-head">
+    <div class="wnum">6</div>
+    <div class="htxt">
+      <h2>Logistic Regression <span class="wkscore" style="display:none;font-size:.7rem;font-weight:700;background:#e9f9ef;color:#15803d;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle"></span></h2>
+      <p class="sub2">sigmoid · Newton-Raphson · standardizasyon · confusion matrix · log-loss</p>
+    </div>
+    <div class="chev">›</div>
+  </div>
+  <div class="week-body">
+    <div class="tags"><span>σ(z)=1/(1+e⁻ᶻ)</span><span>log-odds</span><span>Newton-Raphson</span><span>TP/TN/FP/FN</span><span>Accuracy</span><span>Log-loss</span></div>
+
+    <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
+    <p class="lead"><b>Logistic regression</b> sürekli bir değer yerine <b>olasılık</b> tahmin eder. Linear regression'a yakındır ama çıktıyı sigmoid ile [0,1]'e sıkıştırır.</p>
+    <div class="callout formula">
+      Olasılık: <b>P(y=1|x) = σ(wᵀx)</b>, &nbsp; sigmoid: <b>σ(z) = 1/(1+e⁻ᶻ)</b><br>
+      Log-odds (logit) doğrusaldır: <b>log( p/(1−p) ) = β₀ + β₁x₁ + β₂x₂ + …</b><br>
+      Karar kuralı: <b>ŷ = 1 eğer P(y=1|x) &gt; 0.5, değilse ŷ = 0</b>
+    </div>
+
+    <div class="callout key"><span class="lbl">Newton-Raphson ile katsayı tahmini</span>
+    Logistic regresyonun kapalı-form çözümü yoktur; iteratif çözülür:<br>
+    <b>β<sup>(yeni)</sup> = β<sup>(eski)</sup> + (XᵀWX)⁻¹ Xᵀ(y − p)</b><br>
+    W = diag(pᵢ(1−pᵢ)), p = tahmin olasılıkları vektörü. <b>Yakınsama:</b> ‖β<sup>(yeni)</sup> − β<sup>(eski)</sup>‖ &lt; ε (örn. 10⁻⁶) olduğunda durur.</div>
+
+    <div class="callout key"><span class="lbl">Neden standardizasyon? (z = (x−μ)/σ)</span>
+    (1) Özellikler karşılaştırılabilir ölçeğe gelir (biri büyüklükten dolayı baskınlaşmaz). (2) Newton-Raphson sayısal olarak <b>daha kararlı</b> ((XᵀWX)⁻¹ daha iyi koşullu). (3) Katsayılar karşılaştırılabilir yorumlanır (1 birim = 1 standart sapma). (4) Polinom terimleri (x₁², x₁x₂) gereksiz büyümez.</div>
+
+    <h4 class="mini">Confusion Matrix &amp; metrikler</h4>
+    <table class="tbl">
+      <tr><th></th><th>Tahmin = 1</th><th>Tahmin = 0</th></tr>
+      <tr><th>Gerçek = 1</th><td><b>TP</b> (doğru pozitif)</td><td><b>FN</b> (kaçırılan pozitif)</td></tr>
+      <tr><th>Gerçek = 0</th><td><b>FP</b> (yanlış alarm)</td><td><b>TN</b> (doğru negatif)</td></tr>
+    </table>
+    <div class="callout formula">
+      <b>Accuracy</b> = (TP+TN)/(TP+TN+FP+FN) &nbsp;·&nbsp; <b>Misclassification</b> = 1 − Accuracy<br>
+      <b>Log-loss</b> = −(1/N) Σ [ yᵢ·ln(pᵢ) + (1−yᵢ)·ln(1−pᵢ) ] &nbsp;→ olasılıkların kalitesini ölçer (düşük = iyi)
+    </div>
+
+    <h3 class="sec"><span class="ic">🧮</span> Çözümlü Örnek — Öğrenci Sertifika Sınavı (Geçer/Kalır)</h3>
+    <div class="ex">
+      <span class="extitle">🎓 H=çalışma saati, M=deneme puanı → y∈{0,1}</span>
+      <p>3 farklı model kuruldu, hepsi standardize edilmiş değişkenlerle ve Newton-Raphson ile çözüldü.</p>
+      <div class="step"><span class="sh">Model 1 — basit (yalnız x₁)</span> Sıfırdan başlayıp yakınsayınca: <b>log(p/(1−p)) = 0 + 0.6171·x₁</b></div>
+      <div class="step"><span class="sh">Model 2 — çoklu (x₁, x₂)</span> <b>log(p/(1−p)) = −0.0046 − 0.1249·x₁ + 0.7798·x₂</b></div>
+      <div class="step"><span class="sh">Model 3 — polinom/etkileşim</span> x₁², x₁x₂, x₂² eklenir → çok daha esnek karar sınırı.</div>
+      <table class="tbl">
+        <tr><th>Model</th><th>Train Acc</th><th>Val Acc</th><th>Train Log-Loss</th><th>Val Log-Loss</th></tr>
+        <tr><td>Model 1 (basit)</td><td>0.6667</td><td>0.5000</td><td>0.6884</td><td>0.7484</td></tr>
+        <tr><td>Model 2 (çoklu)</td><td>0.6667</td><td>0.5000</td><td>0.6307</td><td>0.7462</td></tr>
+        <tr class="hl"><td>Model 3 (polinom)</td><td><b>1.0000</b></td><td><b>1.0000</b></td><td>0.0015</td><td>0.2002</td></tr>
+      </table>
+      <div class="res">📌 Bu küçük veri için en iyi <b>Model 3</b>. Ama dikkat: train acc=1.0 küçük veri kümelerinde <b>overfitting</b> sinyali olabilir; Model 3 en az yorumlanabilir olandır. Model 1 logistic fikri+Newton-Raphson'u, Model 2 çoklu yordayıcıyı, Model 3 zengin feature engineering'in gücünü gösterir.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✅</span> Çoktan Seçmeli Sorular</h3>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S1.</span>Sigmoid (lojistik) fonksiyon nedir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">σ(z) = 1/(1+e⁻ᶻ)<span class="mk"></span></button>
+      <button class="opt">σ(z) = z²<span class="mk"></span></button>
+      <button class="opt">σ(z) = max(0,z)<span class="mk"></span></button>
+      <button class="opt">σ(z) = ln(z)<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> Sigmoid girdiyi (0,1) aralığına sıkıştırır: σ(z)=1/(1+e⁻ᶻ). (max(0,z) ReLU'dur.)</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S2.</span>Logistic regresyonda varsayılan karar kuralı (eşik 0.5) nedir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">P&gt;0.9 ise ŷ=1<span class="mk"></span></button>
+      <button class="opt">Her zaman ŷ=1<span class="mk"></span></button>
+      <button class="opt">P(y=1|x)&gt;0.5 ise ŷ=1, değilse ŷ=0<span class="mk"></span></button>
+      <button class="opt">P&lt;0.5 ise ŷ=1<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> Olasılık 0.5'i geçerse pozitif sınıf atanır.</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S3.</span>Newton-Raphson güncellemesinde W matrisi neyin köşegenidir?<span class="diff d3">Zor</span></p>
+      <button class="opt">yᵢ² değerlerinin<span class="mk"></span></button>
+      <button class="opt">xᵢ değerlerinin<span class="mk"></span></button>
+      <button class="opt">artıkların (yᵢ−pᵢ)<span class="mk"></span></button>
+      <button class="opt">pᵢ(1−pᵢ) değerlerinin<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> W = diag(pᵢ(1−pᵢ)). Güncelleme: β←β+(XᵀWX)⁻¹Xᵀ(y−p).</div>
+    </div>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S4.</span>Logistic regresyonda standardizasyonun faydalarından biri <b>değildir</b>:<span class="diff d2">Orta</span></p>
+      <button class="opt">Newton-Raphson sayısal kararlılığını artırır<span class="mk"></span></button>
+      <button class="opt">Modelin sınıf sayısını otomatik belirler<span class="mk"></span></button>
+      <button class="opt">Özellikleri karşılaştırılabilir ölçeğe getirir<span class="mk"></span></button>
+      <button class="opt">Polinom terimlerinin aşırı büyümesini önler<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> Standardizasyon sınıf sayısını belirlemez. Diğer üçü gerçek faydalardır.</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S5.</span>Bir confusion matrix'te TP=2, TN=2, FP=1, FN=1 ise accuracy nedir?<span class="diff d2">Orta</span></p>
+      <button class="opt">0.50<span class="mk"></span></button>
+      <button class="opt">0.75<span class="mk"></span></button>
+      <button class="opt">0.6667<span class="mk"></span></button>
+      <button class="opt">0.40<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> Accuracy=(TP+TN)/toplam=(2+2)/6=4/6=0.6667.</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S6.</span>Log-loss neyi ölçer?<span class="diff d2">Orta</span></p>
+      <button class="opt">Tahmin edilen olasılıkların kalitesini (düşük=iyi)<span class="mk"></span></button>
+      <button class="opt">Çıktının birimini<span class="mk"></span></button>
+      <button class="opt">Ağaç derinliğini<span class="mk"></span></button>
+      <button class="opt">Yalnızca eğim katsayısını<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> Log-loss = −(1/N)Σ[yln p+(1−y)ln(1−p)]; doğru sınıfa düşük olasılık vermeyi cezalandırır.</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S7.</span>Model 3'ün eğitim doğruluğu 1.0 çıkması küçük veri kümesinde neyi düşündürmeli?<span class="diff d3">Zor</span></p>
+      <button class="opt">Modelin kesinlikle en iyisi olduğunu<span class="mk"></span></button>
+      <button class="opt">Veri sızıntısı olmadığını<span class="mk"></span></button>
+      <button class="opt">Standardizasyonun gereksiz olduğunu<span class="mk"></span></button>
+      <button class="opt">Olası overfitting riskini (ezber) ve düşük yorumlanabilirliği<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> Mükemmel eğitim uyumu, özellikle küçük veride, overfitting işareti olabilir; ayrıca polinom model en az yorumlanabilir olandır.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✍️</span> Açık Uçlu Sorular</h3>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A1.</span>Logistic regresyonda standardizasyonun 4 yararını açıklayın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      <b>(1)</b> Farklı birimlerdeki yordayıcılar (örn. saat vs 0–100 puan) karşılaştırılabilir ölçeğe gelir; biri sırf büyük olduğu için baskın olmaz. <b>(2)</b> Katsayı tahmini matris tersine ((XᵀWX)⁻¹) dayanır; çok farklı ölçekler bu matrisi kararsızlaştırır — standardizasyon Newton-Raphson'u kararlı kılar. <b>(3)</b> Katsayılar karşılaştırılabilir yorumlanır: 1 birim değişim = 1 standart sapma. <b>(4)</b> Polinom terimleri (x₁², x₁x₂, x₂²) gereksiz biçimde büyümez.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A2.</span>TP, TN, FP, FN terimlerini tanımlayın ve confusion matrix'ten accuracy ile misclassification rate nasıl hesaplanır gösterin.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      <b>TP:</b> tahmin 1, gerçek 1 (doğru pozitif). <b>TN:</b> tahmin 0, gerçek 0 (doğru negatif). <b>FP:</b> tahmin 1, gerçek 0 (yanlış alarm). <b>FN:</b> tahmin 0, gerçek 1 (kaçırılan pozitif). <b>Accuracy</b> = (TP+TN)/(TP+TN+FP+FN). <b>Misclassification rate</b> = 1 − Accuracy = (FP+FN)/toplam.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A3.</span>Üç modeli yorumlanabilirlik–esneklik–performans ekseninde karşılaştırın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      <b>Model 1 (basit):</b> en anlaşılır, tek yordayıcı, logistic fikri ve Newton-Raphson'u öğretmek için ideal; en az esnek, en zayıf performans. <b>Model 2 (çoklu):</b> her iki önemli yordayıcıyı içerir, daha gerçekçi, hâlâ yorumlanabilir; ama (x₁,x₂) düzleminde sınır hâlâ doğrusal. <b>Model 3 (polinom/etkileşim):</b> eğrilik ve etkileşimi yakalar, en esnek, bu örnekte en iyi performans; fakat en az yorumlanabilir ve küçük veride overfit edebilir. Özet: esneklik arttıkça performans (bu veride) artar ama yorumlanabilirlik düşer ve overfit riski artar.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A4.</span>"log( p/(1−p) ) = β₀ + β₁x₁ + …" ifadesi ne anlama gelir? Neden olasılık yerine log-odds doğrusal modellenir?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Sol taraf <b>log-odds (logit)</b>'tir: olasılığın oranının (p/(1−p)) logaritması. Olasılık [0,1] ile sınırlıdır, bu yüzden doğrudan doğrusal modellenemez (tahminler aralığı taşabilir). Logit dönüşümü olasılığı (−∞, +∞)'a açar; böylece sağ tarafta sınırsız bir doğrusal kombinasyon (β₀+β₁x₁+…) kullanılabilir. Geri dönüşte sigmoid uygulanarak tahmin tekrar [0,1] olasılığına çevrilir.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WEEK 9 ===================== -->
+<section class="week" data-n="H9" id="week9">
+  <div class="week-head">
+    <div class="wnum">9</div>
+    <div class="htxt">
+      <h2>k-Nearest Neighbors (Teori) <span class="wkscore" style="display:none;font-size:.7rem;font-weight:700;background:#e9f9ef;color:#15803d;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle"></span></h2>
+      <p class="sub2">lazy learner · mesafe metrikleri · k seçimi · ölçekleme · precision/recall/F1</p>
+    </div>
+    <div class="chev">›</div>
+  </div>
+  <div class="week-body">
+    <div class="tags"><span>Lazy / instance-based</span><span>Euclidean/Manhattan/Minkowski/Mahalanobis</span><span>√n</span><span>odd k</span><span>F1-score</span><span>Curse of dimensionality</span></div>
+
+    <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
+    <p class="lead"><b>k-NN</b> yeni bir örneği, özellik uzayında <b>en yakın k komşusunun</b> çoğunluk sınıfına (classification) veya hedeflerinin ortalamasına (regression) göre tahmin eder. <b>Lazy learner</b>'dır: eğitimde açık parametrik model kurmaz, veriyi saklar; asıl hesabı <b>tahmin anında</b> yapar. Bu yüzden eğitim maliyeti düşük, <b>tahmin maliyeti yüksek</b>tir (instance/memory-based).</p>
+
+    <h4 class="mini">Mesafe metrikleri (yakınlığın anlamını belirler)</h4>
+    <table class="tbl">
+      <tr><th>Metrik</th><th>Formül / Tanım</th><th>Ne zaman</th></tr>
+      <tr><td>Euclidean</td><td>√Σ(xⱼ−zⱼ)²</td><td>En yaygın; sürekli, ölçeklenmiş, benzer tip özellikler</td></tr>
+      <tr><td>Manhattan</td><td>Σ|xⱼ−zⱼ|</td><td>Izgara hareketi; outlier/yüksek boyutta biraz daha gürbüz</td></tr>
+      <tr><td>Minkowski</td><td>(Σ|xⱼ−zⱼ|ᵖ)^(1/p)</td><td>Genelleme: <b>p=1→Manhattan, p=2→Euclidean</b></td></tr>
+      <tr><td>Chebyshev</td><td>maxⱼ|xⱼ−zⱼ|</td><td>En büyük koordinat farkı</td></tr>
+      <tr><td>Mahalanobis</td><td>√((x−z)ᵀS⁻¹(x−z))</td><td>Özellikler arası <b>korelasyonu</b> ve varyansı hesaba katar</td></tr>
+    </table>
+
+    <h4 class="mini">Sınıflandırma &amp; regresyon kuralı</h4>
+    <div class="callout formula">
+      Classification: ŷ = en çok oy alan sınıf (majority vote). Olasılık ≈ komşular içindeki sınıf oranı (7/10 komşu sınıf 1 ise P≈0.7).<br>
+      Regression: ŷ = (1/k)·Σ yᵢ (komşu hedeflerinin ortalaması). <b>Weighted k-NN:</b> w = 1/(d+ε) veya 1/(d²+ε) → yakın komşu daha etkili.
+    </div>
+
+    <div class="callout key"><span class="lbl">k seçimi ve bias–variance</span>
+    <table class="tbl" style="margin:6px 0 0">
+      <tr><th>Küçük k (örn. k=1)</th><th>Büyük k</th></tr>
+      <tr><td>Düşük bias, <b>yüksek variance</b></td><td><b>Yüksek bias</b>, düşük variance</td></tr>
+      <tr><td>Yerel yapıyı yakalar; gürültüye duyarlı, <b>overfit</b></td><td>Kararlı; yerel yapı kaybolur, <b>underfit</b>/aşırı pürüzsüz</td></tr>
+    </table>
+    Seçim yöntemleri: <b>√n</b> kaba başlangıç (n=100→k≈10), <b>cross-validation</b> (en güvenilir), ikili sınıflamada <b>tek (odd) k</b> (beraberlik/tie önlemek için). Gürültülü veride büyük k, dengesiz sınıfta weighted/balanced.</div>
+
+    <div class="callout trap"><span class="lbl">⚠️ Ölçekleme şart!</span>
+    k-NN mesafe-temelli olduğundan ölçeklenmemiş özelliklerde büyük aralıklı değişken mesafeye hâkim olur. Örn. yaş (20–60) vs gelir (20.000–200.000): gelir mesafeyi neredeyse tamamen belirler. Çözüm: <b>standardizasyon</b> (z=(x−μ)/σ) veya <b>min-max</b> ((x−min)/(max−min)).</div>
+
+    <h4 class="mini">Sınıflandırma metrikleri</h4>
+    <div class="callout formula">
+      Accuracy = (TP+TN)/Toplam &nbsp;·&nbsp; Error = 1 − Accuracy<br>
+      <b>Precision = TP/(TP+FP)</b> (pozitif tahminlerin doğruluğu) &nbsp;·&nbsp; <b>Recall = TP/(TP+FN)</b> (gerçek pozitifleri yakalama)<br>
+      <b>F1 = 2·(Precision·Recall)/(Precision+Recall)</b> → dengesiz veride accuracy yanıltıcıyken F1 daha bilgilendirici.
+    </div>
+    <div class="callout key"><span class="lbl">Yüksek boyut laneti (curse of dimensionality)</span>
+    Çok boyutta "yakınlık" anlamını yitirir. Çözüm sadece k'yi artırmak değil; <b>boyut indirgeme, özellik seçimi, metrik öğrenme</b>. k-NN ayrıca yeterli veriyle teorik olarak <b>Bayes hata oranına</b> yaklaşabilir.</div>
+
+    <h3 class="sec"><span class="ic">✅</span> Çoktan Seçmeli Sorular</h3>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S1.</span>k-NN'in "lazy learner" olması ne demektir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">Düşük doğruluk verir<span class="mk"></span></button>
+      <button class="opt">Eğitimde model kurmaz, veriyi saklar; hesabı tahmin anında yapar<span class="mk"></span></button>
+      <button class="opt">Sadece küçük veriyle çalışır<span class="mk"></span></button>
+      <button class="opt">Gradient descent kullanır<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> k-NN eğitimde parametre öğrenmez; tahminde komşuları arar. Eğitim ucuz, tahmin pahalı.</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S2.</span>Minkowski mesafesinde p=2 hangi metriği verir?<span class="diff d2">Orta</span></p>
+      <button class="opt">Manhattan<span class="mk"></span></button>
+      <button class="opt">Chebyshev<span class="mk"></span></button>
+      <button class="opt">Mahalanobis<span class="mk"></span></button>
+      <button class="opt">Euclidean<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> p=1 → Manhattan, p=2 → Euclidean. Minkowski ikisinin genellemesidir.</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S3.</span>Çok küçük k (örn. k=1) seçmek neye yol açar?<span class="diff d2">Orta</span></p>
+      <button class="opt">Yüksek variance, gürültüye duyarlılık, overfitting<span class="mk"></span></button>
+      <button class="opt">Yüksek bias, underfitting<span class="mk"></span></button>
+      <button class="opt">Her zaman en iyi sonuç<span class="mk"></span></button>
+      <button class="opt">Mesafe hesabını gereksiz kılar<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> Küçük k çok yerel → düşük bias ama yüksek variance; tek bir aykırı komşu sonucu değiştirebilir (overfit).</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S4.</span>k-NN'de özellik ölçeklemesi neden çoğu zaman zorunludur?<span class="diff d1">Kolay</span></p>
+      <button class="opt">Eğitim süresini kısaltmak için<span class="mk"></span></button>
+      <button class="opt">Sınıf sayısını azaltmak için<span class="mk"></span></button>
+      <button class="opt">Büyük aralıklı özelliğin mesafeye hâkim olmasını önlemek için<span class="mk"></span></button>
+      <button class="opt">Ağaç derinliğini sınırlamak için<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> Ölçeklenmezse büyük aralıklı değişken (örn. gelir) mesafeyi domine eder; standardize/min-max gerekir.</div>
+    </div>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S5.</span>İkili sınıflandırmada k için neden çoğunlukla tek (odd) sayı seçilir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">Hesabı hızlandırmak için<span class="mk"></span></button>
+      <button class="opt">Oylarda beraberliği (tie) önlemek için<span class="mk"></span></button>
+      <button class="opt">Ölçeklemeyi gereksiz kılmak için<span class="mk"></span></button>
+      <button class="opt">Variance'ı sıfırlamak için<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> İki sınıf + çift k → eşit oy (tie) olabilir; tek k bunu engeller.</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S6.</span>n=400 eğitim örneği için √n kuralı yaklaşık hangi k'yi önerir?<span class="diff d2">Orta</span></p>
+      <button class="opt">k≈4<span class="mk"></span></button>
+      <button class="opt">k≈40<span class="mk"></span></button>
+      <button class="opt">k≈20<span class="mk"></span></button>
+      <button class="opt">k≈200<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> √400 = 20. Bu sadece kaba bir başlangıçtır; kesin seçim cross-validation iledir.</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S7.</span>Precision ve Recall formülleri hangisinde doğru verilmiştir?<span class="diff d3">Zor</span></p>
+      <button class="opt">Precision=TP/(TP+FP), Recall=TP/(TP+FN)<span class="mk"></span></button>
+      <button class="opt">Precision=TP/(TP+FN), Recall=TP/(TP+FP)<span class="mk"></span></button>
+      <button class="opt">Precision=TN/(TN+FP), Recall=TN/(TN+FN)<span class="mk"></span></button>
+      <button class="opt">İkisi de TP/Toplam<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> Precision pozitif <i>tahminlerin</i> doğruluğu (payda FP), Recall gerçek <i>pozitifleri</i> yakalama (payda FN). F1 ikisinin harmonik ortalamasıdır.</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S8.</span>Mahalanobis mesafesi Euclidean'dan farklı olarak neyi hesaba katar?<span class="diff d3">Zor</span></p>
+      <button class="opt">Yalnızca en büyük koordinat farkını<span class="mk"></span></button>
+      <button class="opt">Sadece mutlak farkları<span class="mk"></span></button>
+      <button class="opt">Komşu sayısını<span class="mk"></span></button>
+      <button class="opt">Özellikler arası korelasyonu ve her yönün varyansını (S⁻¹ ile)<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> Mahalanobis kovaryans matrisi S'i kullanarak korelasyon ve varyansı normalize eder; bazı uygulamalarda Euclidean'dan daha anlamlıdır.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✍️</span> Açık Uçlu Sorular</h3>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A1.</span>k-NN neden "lazy learner" olarak adlandırılır? Eğitim ve tahmin maliyetlerini karşılaştırın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Diğer birçok algoritma (linear/logistic regression, SVM, sinir ağları) eğitim sırasında parametre/karar sınırı öğrenir. k-NN ise eğitimde <b>hiçbir açık model kurmaz</b>; sadece eğitim verisini saklar. Tüm hesaplama (tüm noktalara mesafe, sıralama, oylama) <b>tahmin anına</b> ertelenir. Sonuç: <b>eğitim maliyeti çok düşük</b>, <b>tahmin maliyeti yüksek</b> (özellikle büyük veride yavaş).</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A2.</span>k değeri bias–variance dengesini nasıl etkiler? Pratikte k nasıl seçilir?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      <b>Küçük k:</b> düşük bias, yüksek variance — çok yerel, gürültüye/aykırı komşuya duyarlı, overfit eğilimli. <b>Büyük k:</b> yüksek bias, düşük variance — daha kararlı ama yerel yapı kaybolur, sınırlar aşırı pürüzsüzleşir, underfit. <b>Seçim:</b> kaba başlangıç √n; asıl seçim <b>cross-validation</b> ile (k∈{1,3,5,7,9,…} denenip validation hatası/F1 en iyi olan); ikili sınıflamada tek k; gürültülü veride biraz daha büyük k. Optimal k, validation hatasını minimum yapandır.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A3.</span>4 farklı mesafe metriği sayın ve her birinin ne zaman uygun olduğunu kısaca belirtin.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      <b>Euclidean</b> (√Σ(xⱼ−zⱼ)²): en yaygın; sürekli, ölçeklenmiş, benzer tipte özellikler için düz-çizgi mesafesi. <b>Manhattan</b> (Σ|xⱼ−zⱼ|): ızgara hareketi; outlier ve bazı yüksek-boyut durumlarında biraz daha gürbüz. <b>Minkowski</b> ((Σ|·|ᵖ)^(1/p)): genelleme, p ile ayarlanır (p=1 Manhattan, p=2 Euclidean). <b>Mahalanobis</b> (√((x−z)ᵀS⁻¹(x−z))): özellikler korelasyonlu/farklı varyanslı olduğunda — kovaryansla normalize eder. (Chebyshev: max koordinat farkı.)</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A4.</span>Dengesiz (imbalanced) sınıf dağılımında büyük k neden sorun yaratır ve ne yapılmalı?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Sınıflar dengesizse (örn. %90 A, %10 B), büyük k komşuların çoğunu çoğunluk sınıfından alır → model <b>çoğunluk sınıfına aşırı eğilim</b> gösterir, azınlık sınıfı kaybolur. Çözümler: <b>weighted k-NN</b> (mesafeye göre ağırlık), <b>distance-weighted voting</b>, <b>sınıf dengeleme</b> stratejileri ve accuracy yerine <b>F1-score, recall veya balanced accuracy</b> gibi uygun metrikler kullanmak.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WEEK 10 ===================== -->
+<section class="week" data-n="H10" id="week10">
+  <div class="week-head">
+    <div class="wnum">10</div>
+    <div class="htxt">
+      <h2>k-NN Sınıflandırma Uygulamaları <span class="wkscore" style="display:none;font-size:.7rem;font-weight:700;background:#e9f9ef;color:#15803d;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle"></span></h2>
+      <p class="sub2">Euclidean mesafe · majority voting · validation/test error (2 tam çözümlü problem)</p>
+    </div>
+    <div class="chev">›</div>
+  </div>
+  <div class="week-body">
+    <div class="tags"><span>k=3</span><span>k=5</span><span>Majority vote</span><span>Validation/Test Error</span><span>Yanlış sınıflama</span></div>
+
+    <h3 class="sec"><span class="ic">📘</span> Kısa Özet</h3>
+    <p class="lead">k-NN sınıflandırma prosedürü: (1) sorgu noktasından tüm eğitim noktalarına Euclidean mesafe hesapla, (2) artan sırala, (3) en yakın k komşuyu seç, (4) <b>çoğunluk oyuyla</b> sınıf ata. Hata = (yanlış sınıflanan)/(toplam).</p>
+
+    <h3 class="sec"><span class="ic">🧮</span> Çözümlü Örnek 1 — Pompa Durumu (k=3)</h3>
+    <div class="ex">
+      <span class="extitle">⚙️ x₁=titreşim, x₂=sıcaklık artışı → {H sağlıklı, U dengesiz, M hizasız}</span>
+      <p>Eğitim: A1(1,1)H, A2(1,2)H, A3(2,1)H, A4(4,1)U, A5(5,1)U, A6(4,2)U, A7(4,4)M, A8(5,4)M, A9(4,5)M.</p>
+      <div class="step"><span class="sh">Validation V1=(2,2)</span>
+      d(A2)=√[(2−1)²+(2−2)²]=1 · d(A3)=√[(2−2)²+(2−1)²]=1 · d(A1)=√2≈1.414 → en yakın 3: A2(H), A3(H), A1(H)<br>
+      Oy: (H,H,H) → <b>ŷ=H</b>. Gerçek H → ✓ doğru.</div>
+      <div class="res">V2(5,2)→U ✓, V3(5,5)→M ✓, V4(3.5,3.5)→M ✓ &nbsp;|&nbsp; <b>Validation Error = 0/4 = %0</b></div>
+      <div class="res">Test T1(1.5,1.5)→H, T2(4.5,1.5)→U, T3(4.5,4.5)→M, T4(3,2)→U → hepsi doğru, <b>Test Error = %0</b></div>
+      <div class="res">Yeni: Q1(3.2,1.8)→<b>U</b> (komşular U,U,H), Q2(4.2,3.8)→<b>M</b>, Q3(2.2,1.8)→<b>H</b></div>
+    </div>
+
+    <h3 class="sec"><span class="ic">🧮</span> Çözümlü Örnek 2 — Kardiyovasküler Risk (k=5) · Yanlış Sınıflama Vakası</h3>
+    <div class="ex">
+      <span class="extitle">❤️ x₁=kalp hızı, x₂=sistolik BP → {L düşük, M orta, H yüksek}</span>
+      <div class="step"><span class="sh">Validation V1=(70,120), gerçek = L</span>
+      En yakın 5 komşu (mesafe sırası): A4(2.83,<b>L</b>), A5(2.83,<b>M</b>), A6(6.40,<b>M</b>), A3(7.07,<b>L</b>), A7(10.0,<b>M</b>)<br>
+      Oylar: L=2, M=3, H=0 → çoğunluk <b>M</b>. Ama gerçek L → <span style="color:#dc2626;font-weight:700">✗ YANLIŞ</span>.</div>
+      <div class="res">V2(75,126)→M ✓, V3(84,138)→H ✓, V4(79,132)→M ✓ &nbsp;|&nbsp; <b>Validation Error = 1/4 = %25</b></div>
+      <div class="res">Test: T1→L ✓, T2→M ✓, T3→H ✓, T4(80,134) gerçek H ama tahmin M ✗ → <b>Test Error = 1/4 = %25</b></div>
+      <div class="res">Yeni hastalar: Q1(71,121)→<b>M</b>, Q2(77,129)→<b>M</b>, Q3(86,142)→<b>H</b></div>
+      <div class="callout trap" style="margin-top:10px"><span class="lbl">Ders</span>Sınır bölgesindeki noktalar (V1, T4) komşu oylamasında ters sonuç verebilir. Burada k=5'te oy 3-2 ile yanlış sınıfa kaydı; farklı k, ölçekleme veya weighted k-NN sonucu değiştirebilir.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✅</span> Çoktan Seçmeli Sorular</h3>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S1.</span>k=3 ile bir noktanın en yakın 3 komşusu {U, U, H} ise tahmin nedir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">H<span class="mk"></span></button>
+      <button class="opt">Beraberlik, karar verilemez<span class="mk"></span></button>
+      <button class="opt">U (çoğunluk: 2 oy)<span class="mk"></span></button>
+      <button class="opt">M<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> Çoğunluk oyu: U=2, H=1 → U.</div>
+    </div>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S2.</span>4 validation örneğinden 1'i yanlış sınıflanırsa validation error nedir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">%50<span class="mk"></span></button>
+      <button class="opt">%25<span class="mk"></span></button>
+      <button class="opt">%75<span class="mk"></span></button>
+      <button class="opt">%100<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> Error = yanlış/toplam = 1/4 = 0.25 = %25.</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S3.</span>(2,2) ile (4,1) arasındaki Euclidean mesafe nedir?<span class="diff d2">Orta</span></p>
+      <button class="opt">√5 ≈ 2.236<span class="mk"></span></button>
+      <button class="opt">3<span class="mk"></span></button>
+      <button class="opt">√3 ≈ 1.732<span class="mk"></span></button>
+      <button class="opt">5<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> √[(2−4)²+(2−1)²]=√[4+1]=√5≈2.236.</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S4.</span>Kardiyovasküler örnekte V1 (gerçek L) neden M olarak yanlış sınıflandı?<span class="diff d2">Orta</span></p>
+      <button class="opt">Euclidean mesafe yanlış hesaplandı<span class="mk"></span></button>
+      <button class="opt">k çok küçük olduğu için<span class="mk"></span></button>
+      <button class="opt">Veri etiketleri hatalı<span class="mk"></span></button>
+      <button class="opt">En yakın 5 komşuda M (3) sayıca L'den (2) fazla olduğu için çoğunluk oyu M'e gitti<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> Sınır bölgesinde oy 3-2 ile M lehine; k-NN salt çoğunluk oyuna baktığından yanlış sınıfa kaydı.</div>
+    </div>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S5.</span>k-NN sınıflandırma adımlarının doğru sırası nedir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">Sırala → mesafe hesapla → oy ver → komşu seç<span class="mk"></span></button>
+      <button class="opt">Mesafe hesapla → sırala → k komşu seç → çoğunluk oyu<span class="mk"></span></button>
+      <button class="opt">Oy ver → mesafe hesapla → sırala<span class="mk"></span></button>
+      <button class="opt">Model eğit → parametre öğren → tahmin<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> Mesafe → sırala → en yakın k → çoğunluk oyu. (k-NN'de "model eğitme/parametre öğrenme" yoktur.)</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✍️</span> Açık Uçlu Sorular</h3>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A1.</span>Pompa örneğinde V1=(2,2) noktasının nasıl H olarak sınıflandığını adım adım gösterin (k=3).</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Tüm eğitim noktalarına Euclidean mesafe hesaplanır. En küçük üçü: A2(1,2) d=√[(2−1)²+0²]=1 (H), A3(2,1) d=√[0²+(2−1)²]=1 (H), A1(1,1) d=√[1+1]=1.414 (H). En yakın 3 komşunun hepsi <b>H</b> → çoğunluk oyu H → ŷ=H. Gerçek sınıf da H olduğu için tahmin doğru.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A2.</span>Kardiyovasküler örnekte V1 ve T4 yanlış sınıflandı (%25 hata). Bu hatayı azaltmak için neler denenebilir?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Bu noktalar sınıf sınırına yakın olduğundan komşu oylaması hassas. Denenebilecekler: <b>(1) Özellik ölçekleme</b> (kalp hızı ve BP farklı aralıkta; standardize/min-max mesafeyi adilleştirir), <b>(2) farklı k</b> (cross-validation ile en iyi k), <b>(3) weighted k-NN</b> (yakın komşu daha çok oy → sınır kararları iyileşir), <b>(4) daha fazla/temsili eğitim verisi</b>. Hiçbiri her zaman garanti değildir; validation ile karşılaştırılmalı.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A3.</span>Bir test setinde 4 örnekten T4 yanlış, diğerleri doğru sınıflandıysa test error ve accuracy nedir? Genelleme hakkında ne söylersiniz?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Test Error = 1/4 = <b>%25</b>, Accuracy = 3/4 = <b>%75</b>. Validation hatası da %25 ise model tutarlı davranıyor (validation≈test) — ciddi overfitting yok ama %25 hata yüksek; sınır bölgesi performansı zayıf. Ölçekleme/weighted k-NN/k ayarıyla iyileştirme hedeflenmeli. Test seti, görülmemiş veri üzerindeki gerçek performansın en güvenilir göstergesidir.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WEEK 11 ===================== -->
+<section class="week" data-n="H11" id="week11">
+  <div class="week-head">
+    <div class="wnum">11</div>
+    <div class="htxt">
+      <h2>k-NN Regresyon &amp; k Seçimi <span class="wkscore" style="display:none;font-size:.7rem;font-weight:700;background:#e9f9ef;color:#15803d;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle"></span></h2>
+      <p class="sub2">komşu ortalaması · MAE/MSE/RMSE · k=1 vs k=7 (2 tam çözümlü problem)</p>
+    </div>
+    <div class="chev">›</div>
+  </div>
+  <div class="week-body">
+    <div class="tags"><span>ŷ=(1/k)Σyᵢ</span><span>MAE/MSE/RMSE</span><span>k=3 optimal</span><span>oversmoothing</span></div>
+
+    <h3 class="sec"><span class="ic">📘</span> Kısa Özet</h3>
+    <p class="lead">k-NN <b>regresyon</b>da çıktı bir sınıf değil sayıdır: tahmin, en yakın k komşunun <b>hedef değerlerinin ortalamasıdır</b>: ŷ = (y₁+y₂+…+y_k)/k. Hata MAE/MSE/RMSE ile ölçülür ve en iyi k validation hatasıyla seçilir.</p>
+
+    <h3 class="sec"><span class="ic">🧮</span> Çözümlü Örnek 1 — Alet Aşınması (k=3)</h3>
+    <div class="ex">
+      <span class="extitle">🔧 x₁=mil hızı, x₂=ilerleme → y=takım aşınması (mm)</span>
+      <div class="step"><span class="sh">Validation V1=(2.5, 0.15), gerçek y=0.20</span>
+      En yakın 3 komşu: A3 (d=0.1005, y=0.18), A4 (d=0.3002, y=0.24), A2 (d=0.3015, y=0.15)<br>
+      ŷ = (0.18 + 0.24 + 0.15)/3 = 0.57/3 = <b>0.19</b> → |0.20−0.19| = 0.01</div>
+      <div class="res">Validation: MAE=0.0178, MSE=0.00035, RMSE=0.0187 &nbsp;|&nbsp; Test: MAE=0.0211, MSE=0.00051, RMSE=0.0226</div>
+      <div class="res">📌 Hatalar y aralığına (0.12–0.54 mm) göre çok küçük; test ≈ validation → iyi genelleme, k=3 makul. Yeni: Q1→0.29, Q2→0.4167, Q3→0.4833.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">🧮</span> Çözümlü Örnek 2 — Kan Şekeri (k ∈ {1,3,5,7})</h3>
+    <div class="ex">
+      <span class="extitle">🩸 x₁=kalp hızı, x₂=cilt sıcaklığı → y=glikoz (mg/dL)</span>
+      <div class="step"><span class="sh">V1=(73, 36.15), gerçek y=95 · sıralı komşu hedefleri: 92, 97, 88, 103, 84, 109, 116…</span>
+      k=1 → 92 · k=3 → (92+97+88)/3=92.33 · k=5 → 92.8 · k=7 → 98.43</div>
+      <table class="tbl">
+        <tr><th>k</th><th>Validation MAE</th><th>Yorum</th></tr>
+        <tr><td>1</td><td>3.33</td><td>iyi yerel duyarlılık, biraz gürültülü</td></tr>
+        <tr class="hl"><td>3</td><td><b>3.22</b> ✅</td><td>en iyi denge</td></tr>
+        <tr><td>5</td><td>5.40</td><td>fazla yumuşatma başlıyor</td></tr>
+        <tr><td>7</td><td>7.86</td><td>belirgin oversmoothing (yüksek glikozda kötü)</td></tr>
+      </table>
+      <div class="res">📌 <b>k=3</b> hem validation hem test'te en iyi. <b>k=1</b> tek komşuya bağlı (gürültülü), <b>k=7</b> uç değerleri (yüksek glikoz) aşağı çekerek aşırı yumuşatıyor (oversmoothing). Test MAE'leri de aynı örüntüyü doğruluyor.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✅</span> Çoktan Seçmeli Sorular</h3>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S1.</span>k-NN regresyonda tahmin nasıl üretilir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">En yakın komşunun sınıfının çoğunluğu<span class="mk"></span></button>
+      <button class="opt">En yakın k komşunun hedef değerlerinin ortalaması<span class="mk"></span></button>
+      <button class="opt">Tüm eğitim hedeflerinin medyanı<span class="mk"></span></button>
+      <button class="opt">Bir doğrunun eğimi<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> Regresyonda ŷ = (1/k)·Σyᵢ (komşu hedeflerinin ortalaması). Çoğunluk oyu sınıflandırma içindir.</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S2.</span>En yakın 3 komşunun hedefleri 0.18, 0.24, 0.15 ise k=3 tahmini nedir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">0.24<span class="mk"></span></button>
+      <button class="opt">0.57<span class="mk"></span></button>
+      <button class="opt">0.19<span class="mk"></span></button>
+      <button class="opt">0.15<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> (0.18+0.24+0.15)/3 = 0.57/3 = 0.19.</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S3.</span>Kan şekeri örneğinde k=7'nin yüksek validation hatası vermesinin nedeni?<span class="diff d2">Orta</span></p>
+      <button class="opt">Çok fazla komşu ortalandığı için uç değerler aşırı yumuşatılıyor (oversmoothing)<span class="mk"></span></button>
+      <button class="opt">Mesafeler yanlış hesaplandığı için<span class="mk"></span></button>
+      <button class="opt">k tek sayı olduğu için<span class="mk"></span></button>
+      <button class="opt">Ölçekleme yapılmadığı için<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> Büyük k çok komşuyu ortalar → yerel yapı kaybolur; özellikle yüksek-glikoz uç noktalar aşağı çekilir.</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S4.</span>Bu örnekte hem validation hem test'te en iyi performansı veren k değeri?<span class="diff d1">Kolay</span></p>
+      <button class="opt">k=1<span class="mk"></span></button>
+      <button class="opt">k=5<span class="mk"></span></button>
+      <button class="opt">k=3<span class="mk"></span></button>
+      <button class="opt">k=7<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> k=3 en düşük MAE ile en iyi denge; k=1 gürültülü, k=5/7 aşırı yumuşak.</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S5.</span>MSE=0.00051 ise RMSE yaklaşık kaçtır?<span class="diff d2">Orta</span></p>
+      <button class="opt">0.00051<span class="mk"></span></button>
+      <button class="opt">0.51<span class="mk"></span></button>
+      <button class="opt">0.051<span class="mk"></span></button>
+      <button class="opt">0.0226<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> RMSE=√MSE=√0.00051≈0.0226.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✍️</span> Açık Uçlu Sorular</h3>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A1.</span>Bir sorgu noktasının k=3 ile k-NN regresyon tahminini adım adım nasıl bulursunuz? (alet aşınması V1 örneğiyle)</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      (1) Sorgu V1=(2.5,0.15)'ten tüm eğitim noktalarına Euclidean mesafe hesapla. (2) Artan sırala. (3) En yakın 3'ü seç: A3(0.18), A4(0.24), A2(0.15). (4) Hedeflerin ortalamasını al: ŷ=(0.18+0.24+0.15)/3=0.19. Gerçek 0.20 olduğundan mutlak hata |0.20−0.19|=0.01. Tüm validation noktaları için tekrarlanıp MAE/MSE/RMSE hesaplanır.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A2.</span>k=1 ve k=7 yerine neden k=3 seçildi? Her uç değerin dezavantajını açıklayın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      <b>k=1:</b> tahmin tek komşuya bağlı → yüksek variance, gürültüye/aykırı komşuya çok duyarlı. <b>k=7:</b> çok komşu ortalanır → yüksek bias, yerel yapı kaybolur, uç değerler aşırı yumuşatılır (oversmoothing), özellikle yüksek-glikoz noktada büyük hata. <b>k=3:</b> ikisinin arasında en iyi denge — hem yerel duyarlılık hem kararlılık. Validation MAE'de (k=3 → 3.22) en düşük, test de bunu doğruluyor → k=3 seçilir.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A3.</span>Test MAE'nin (0.0211) validation MAE'den (0.0178) biraz yüksek olması ne anlama gelir?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Bu normal ve beklenen bir durumdur. Test seti modelin gerçekten görmediği veri olduğundan biraz daha zorlayıcı olabilir; küçük bir artış sağlıklıdır. Önemli olan iki hatanın <b>birbirine yakın</b> olmasıdır — bu, modelin <b>tutarlı genellediğini</b> ve ciddi overfitting olmadığını gösterir. Değerler hedef ölçeğine (0.12–0.54 mm) kıyasla çok küçük olduğundan tahmin güvenilir kabul edilir.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WEEK 12 ===================== -->
+<section class="week" data-n="H12" id="week12">
+  <div class="week-head">
+    <div class="wnum">12</div>
+    <div class="htxt">
+      <h2>Ağırlıklı k-NN (Weighted k-NN) <span class="wkscore" style="display:none;font-size:.7rem;font-weight:700;background:#e9f9ef;color:#15803d;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle"></span></h2>
+      <p class="sub2">w=1/d · ağırlıklı oylama · sınıf ağırlığı toplamı (2 tam çözümlü problem)</p>
+    </div>
+    <div class="chev">›</div>
+  </div>
+  <div class="week-body">
+    <div class="tags"><span>w = 1/d</span><span>Σ ağırlık / sınıf</span><span>ŷ=Σwy/Σw</span><span>sınır kararları</span></div>
+
+    <h3 class="sec"><span class="ic">📘</span> Kısa Özet</h3>
+    <p class="lead"><b>Ağırlıklı k-NN</b>, tüm komşulara eşit oy vermek yerine <b>yakın komşulara daha çok ağırlık</b> verir. Sık kullanılan ağırlık: <b>w = 1/d</b> (mesafe küçükse ağırlık büyük).</p>
+    <div class="callout formula">
+      <b>Sınıflandırma:</b> her sınıf, kendi komşularının ağırlıklarının <u>toplamını</u> alır; <b>en yüksek toplam ağırlığa</b> sahip sınıf seçilir (sadece sayı değil!).<br>
+      <b>Regresyon:</b> ŷ = (Σ wᵢ·yᵢ) / (Σ wᵢ) &nbsp;(ağırlıklı ortalama). Eğer d=0 ise doğrudan o noktanın sınıfı/değeri atanır.
+    </div>
+    <div class="callout key"><span class="lbl">Neden ağırlıklı?</span>0.1 mesafedeki bir komşu ile 4.8 mesafedeki bir komşunun eşit etkide olması mantıksızdır. Ağırlıklandırma, özellikle <b>sınıf sınırlarına yakın</b> noktalarda daha anlamlı kararlar verir.</div>
+
+    <h3 class="sec"><span class="ic">🧮</span> Çözümlü Örnek — Kredi Temerrüdü (Weighted k-NN, k=3)</h3>
+    <div class="ex">
+      <span class="extitle">🏦 x₁=gelir, x₂=borç oranı → {0 temerrüt yok, 1 temerrüt}</span>
+      <div class="step"><span class="sh">Test S2=(3.5, 0.75), gerçek = 1</span>
+      En yakın 3 komşu ve ağırlık (w=1/d):<br>
+      T1: d=0.502, sınıf 1, w=1/0.502=1.990 · T2: d=0.502, sınıf 1, w=1.990 · T6: d=1.011, sınıf 1, w=0.989<br>
+      Sınıf 1 toplam = 1.990+1.990+0.989 = <b>4.969</b> · Sınıf 0 toplam = <b>0</b></div>
+      <div class="res">W₁ = 4.969 &gt; W₀ = 0 → <b>ŷ = 1</b> (doğru). Bu örnekte validation ve test hatası %0.</div>
+      <div class="step"><span class="sh">Karşı örnek — S3=(6.8, 0.50), gerçek = 0</span>
+      En yakın 3: T5(d=0.361, sınıf 0, w=2.770), T4(d=0.825, sınıf 0, w=1.212), T3(d=1.803, sınıf 0, w=0.555)<br>
+      Sınıf 0 = 2.770+1.212+0.555 = 4.537 → ŷ=0 ✓</div>
+    </div>
+
+    <div class="callout key"><span class="lbl">Diyabet riski örneği (k=3 ve k=5)</span>
+    Aynı yöntem k=5 ile de uygulanır; her komşunun w=1/d ağırlığı sınıfına eklenir. Örn. V1=(4.5,5.5): k=3'te W₁=1.414+1.414=2.828 &gt; W₀=0.632 → sınıf 1; k=5'te de W₁=3.299 &gt; W₀=1.103 → sınıf 1. Hem k=3 hem k=5 için validation/test hatası %0 çıkmıştır.</div>
+
+    <h3 class="sec"><span class="ic">✅</span> Çoktan Seçmeli Sorular</h3>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S1.</span>Ağırlıklı k-NN'de en yaygın ağırlık formülü nedir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">w = d<span class="mk"></span></button>
+      <button class="opt">w = 1/d<span class="mk"></span></button>
+      <button class="opt">w = d²<span class="mk"></span></button>
+      <button class="opt">w = √d<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> w=1/d: mesafe küçüldükçe ağırlık büyür (yakın komşu daha etkili). (w=1/d² de kullanılır.)</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S2.</span>Ağırlıklı k-NN sınıflandırmada karar nasıl verilir?<span class="diff d2">Orta</span></p>
+      <button class="opt">En çok komşu sayısına sahip sınıf seçilir<span class="mk"></span></button>
+      <button class="opt">En uzak komşunun sınıfı seçilir<span class="mk"></span></button>
+      <button class="opt">Ağırlık toplamı en yüksek olan sınıf seçilir<span class="mk"></span></button>
+      <button class="opt">Rastgele bir sınıf seçilir<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> Her sınıf komşularının ağırlık toplamını alır; <b>en yüksek toplam</b> kazanır — salt sayı değil.</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S3.</span>Ağırlıklı k-NN regresyon tahmini hangi formülle hesaplanır?<span class="diff d2">Orta</span></p>
+      <button class="opt">ŷ = (Σwᵢyᵢ)/(Σwᵢ)<span class="mk"></span></button>
+      <button class="opt">ŷ = Σyᵢ/k<span class="mk"></span></button>
+      <button class="opt">ŷ = Σwᵢ/Σyᵢ<span class="mk"></span></button>
+      <button class="opt">ŷ = max(yᵢ)<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> Ağırlıklı ortalama: ŷ=(Σwᵢyᵢ)/(Σwᵢ). Standart k-NN'de (eşit ağırlık) bu basit ortalamaya indirgenir.</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S4.</span>3 komşu: sınıf 1 (w=1.990), sınıf 1 (w=1.990), sınıf 0 (w=0.664). Tahmin?<span class="diff d1">Kolay</span></p>
+      <button class="opt">Sınıf 0 (çünkü tek başına büyük)<span class="mk"></span></button>
+      <button class="opt">Beraberlik<span class="mk"></span></button>
+      <button class="opt">Karar verilemez<span class="mk"></span></button>
+      <button class="opt">Sınıf 1 (W₁=3.980 &gt; W₀=0.664)<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> W₁=1.990+1.990=3.980, W₀=0.664 → sınıf 1.</div>
+    </div>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S5.</span>Ağırlıklı k-NN özellikle nerede standart k-NN'den daha anlamlıdır?<span class="diff d2">Orta</span></p>
+      <button class="opt">Yalnızca tek boyutlu veride<span class="mk"></span></button>
+      <button class="opt">Sınıf sınırlarına yakın noktalarda (yakın komşu daha çok etki etmeli)<span class="mk"></span></button>
+      <button class="opt">Sadece eğitim aşamasında<span class="mk"></span></button>
+      <button class="opt">Ölçekleme gerektirmediği için her zaman<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> Yakın komşunun daha çok ağırlık taşıması, sınır bölgesindeki kararları iyileştirir.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✍️</span> Açık Uçlu Sorular</h3>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A1.</span>Standart k-NN ile ağırlıklı k-NN arasındaki temel farkı açıklayın. Neden ağırlıklandırma yapılır?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      <b>Standart k-NN:</b> seçilen k komşunun hepsi eşit oy/ağırlık taşır. <b>Ağırlıklı k-NN:</b> her komşu mesafesine göre ağırlıklandırılır (w=1/d); yakın komşu daha çok etki eder. Gerekçe: 0.1 mesafedeki bir komşunun, 4.8 mesafedeki bir komşuyla aynı etkiye sahip olması mantıksızdır. Sınıflandırmada sınıf ağırlık toplamları karşılaştırılır; regresyonda ağırlıklı ortalama alınır. Bu, özellikle sınır bölgelerinde daha doğru kararlar verir.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A2.</span>S2=(3.5,0.75) için ağırlıklı k-NN (k=3) tahminini adım adım hesaplayın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      (1) Mesafeler hesaplanır, en yakın 3 komşu seçilir: T1 (d=0.502, sınıf 1), T2 (d=0.502, sınıf 1), T6 (d=1.011, sınıf 1). (2) Ağırlıklar w=1/d: 1/0.502=1.990, 1.990, 1/1.011=0.989. (3) Sınıf ağırlık toplamları: W₁=1.990+1.990+0.989=<b>4.969</b>, W₀=0. (4) W₁&gt;W₀ → <b>ŷ=1</b>. Gerçek sınıf 1 olduğundan tahmin doğru.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A3.</span>Diyabet örneğinde hem k=3 hem k=5 %0 hata veriyorsa, hangi k'yi seçersiniz ve neden?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      İki k de validation/test'te kusursuzsa, genelde <b>daha kararlı ve gürültüye dayanıklı</b> olduğu için biraz daha büyük k (k=5) makul bir tercih olabilir; ancak veri küçükse ve k=5 fazla yumuşatma riski taşıyorsa k=3 yeterlidir. Karar gerekçesi performans eşitse <b>basitlik/kararlılık dengesidir</b>; pratikte daha geniş bir validation kümesinde fark açılırsa düşük hatalı olan seçilir. Önemli olan seçimi performansa <i>dayandırmak</i> ve gerekçelendirmektir.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WEEK 13 ===================== -->
+<section class="week" data-n="H13" id="week13">
+  <div class="week-head">
+    <div class="wnum">13</div>
+    <div class="htxt">
+      <h2>Ağırlıklı k-NN Regresyon &amp; Ölçekleme <span class="wkscore" style="display:none;font-size:.7rem;font-weight:700;background:#e9f9ef;color:#15803d;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle"></span></h2>
+      <p class="sub2">w=1/d ve 1/d² · min-max · standardizasyon · validation MAE ile k seçimi</p>
+    </div>
+    <div class="chev">›</div>
+  </div>
+  <div class="week-body">
+    <div class="tags"><span>ŷ=Σwy/Σw</span><span>w=1/d²</span><span>Min-Max</span><span>z=(x−μ)/σ</span><span>AE/SE/APE/RMSE</span></div>
+
+    <h3 class="sec"><span class="ic">📘</span> Kısa Özet</h3>
+    <p class="lead">Ağırlıklı k-NN regresyonda tahmin <b>ŷ = Σwᵢyᵢ / Σwᵢ</b>. İki yaygın ağırlık şeması: <b>ters mesafe w=1/d</b> ve <b>ters kare mesafe w=1/d²</b> (yakın komşuyu daha da çok vurgular). Özellikler farklı ölçekteyse önce ölçeklenir.</p>
+    <div class="callout formula">
+      <b>Min-Max normalizasyon:</b> x' = (x − x<sub>min</sub>)/(x<sub>max</sub> − x<sub>min</sub>) → [0,1] aralığı<br>
+      <b>Standardizasyon:</b> z = (x − μ)/σ → ortalama 0, std 1<br>
+      <b>Hata metrikleri:</b> AE=|y−ŷ|, SE=(y−ŷ)², APE=|y−ŷ|/y·100, RMSE=√(ortalama SE)
+    </div>
+    <div class="callout trap"><span class="lbl">⚠️ Sadece eğitim verisinin min/max veya μ/σ'sını kullan!</span>
+    Validation/test/yeni veriyi ölçeklerken parametreler <b>yalnızca eğitim verisinden</b> hesaplanır. Aksi halde test bilgisi modele sızar (<b>data leakage</b>) ve performans şişirilmiş olur.</div>
+
+    <h3 class="sec"><span class="ic">🧮</span> Çözümlü Örnek 1 — Soğutma Pompası (w=1/d, k=3)</h3>
+    <div class="ex">
+      <span class="extitle">💧 x₁=debi, x₂=basınç → y=enerji (kWh)</span>
+      <p>Eğitim: T1(10,2)→100, T2(12,3)→115, T3(14,3)→130, T4(16,4)→150, T5(18,5)→170.</p>
+      <div class="step"><span class="sh">Validation V1=(13,3), gerçek y=125</span>
+      d(T2)=√[(13−12)²+0]=1 · d(T3)=√[(13−14)²+0]=1 · d(T1)=√[(13−10)²+(3−2)²]=√10=3.162<br>
+      En yakın 3: T2(y=115,w=1), T3(y=130,w=1), T1(y=100,w=1/3.162=0.316)</div>
+      <div class="step"><span class="sh">Ağırlıklı ortalama</span>
+      ŷ = (1·115 + 1·130 + 0.316·100)/(1+1+0.316) = (245+31.6)/2.316 = 276.6/2.316 = <b>119.43</b><br>
+      AE = |125 − 119.43| = <b>5.57</b></div>
+      <div class="res">Test S1=(17,4): ŷ=153.87 → SE=(160−153.87)²=37.58 · Yeni U1=(15,4): ŷ=137.54 → APE=|145−137.54|/145·100=<b>5.14%</b></div>
+    </div>
+
+    <h3 class="sec"><span class="ic">🧮</span> Çözümlü Örnek 2 &amp; 3 — Ölçekleme + k seçimi</h3>
+    <div class="ex">
+      <span class="extitle">🛠️ CNC (min-max, w=1/d²) ve Motor sıcaklığı (standardizasyon, w=1/d²)</span>
+      <div class="step"><span class="sh">CNC: k=2 vs k=3 (validation MAE)</span>
+      Min-max normalize edilir (eğitim min/max ile). Validation MAE: k=2 → <b>0.05</b>, k=3 → 0.12 → <b>k=2 seçilir</b>. Sonra test RMSE ve yeni veri APE seçilen k ile hesaplanır.</div>
+      <div class="step"><span class="sh">Motor: k=3 vs k=5 (standardizasyon, w=1/d²)</span>
+      z=(x−μ)/σ ile standardize. Validation MAE: k=3 → <b>1.24</b>, k=5 → 2.12 → <b>k=3 seçilir</b>. Test RMSE≈1.78, yeni veri APE≈2.15%.</div>
+      <div class="res">📌 Genel kural: önce ölçekle (eğitim parametreleriyle) → birkaç k dene → <b>validation MAE'yi minimum yapan k'yi seç</b> → seçilen k ile test ve yeni veriyi değerlendir.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✅</span> Çoktan Seçmeli Sorular</h3>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S1.</span>Ters kare mesafe ağırlığı (inverse square) hangisidir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">w = d²<span class="mk"></span></button>
+      <button class="opt">w = 1/d<span class="mk"></span></button>
+      <button class="opt">w = 1/d²<span class="mk"></span></button>
+      <button class="opt">w = √d<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> Ters kare mesafe: w=1/d² (yakın komşuyu, 1/d'ye göre daha da güçlü vurgular).</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S2.</span>Min-Max normalizasyon formülü nedir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">x' = (x − x_min)/(x_max − x_min)<span class="mk"></span></button>
+      <button class="opt">x' = (x − μ)/σ<span class="mk"></span></button>
+      <button class="opt">x' = x/σ²<span class="mk"></span></button>
+      <button class="opt">x' = x − x_max<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> Min-max değeri [0,1]'e ölçekler. (x−μ)/σ ise standardizasyondur.</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S3.</span>Validation/test verisi ölçeklenirken min/max veya μ/σ nereden alınmalı?<span class="diff d3">Zor</span></p>
+      <button class="opt">Tüm veri kümesinden (train+val+test)<span class="mk"></span></button>
+      <button class="opt">Sadece test verisinden<span class="mk"></span></button>
+      <button class="opt">Validation verisinden<span class="mk"></span></button>
+      <button class="opt">Sadece eğitim verisinden (data leakage'ı önlemek için)<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> Ölçekleme parametreleri yalnızca eğitimden hesaplanır; aksi halde test bilgisi sızar ve performans yanıltıcı olur.</div>
+    </div>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S4.</span>En yakın 2 komşu: y=115 (w=1), y=130 (w=1). Ağırlıklı tahmin nedir?<span class="diff d2">Orta</span></p>
+      <button class="opt">115<span class="mk"></span></button>
+      <button class="opt">122.5<span class="mk"></span></button>
+      <button class="opt">245<span class="mk"></span></button>
+      <button class="opt">130<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> ŷ=(1·115+1·130)/(1+1)=245/2=122.5. Eşit ağırlıkta basit ortalamaya iner.</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S5.</span>Birden çok k denenirken (örn. k=2,3,5) en iyi k nasıl seçilir?<span class="diff d2">Orta</span></p>
+      <button class="opt">En yüksek eğitim hatasını veren<span class="mk"></span></button>
+      <button class="opt">Her zaman en büyük k<span class="mk"></span></button>
+      <button class="opt">Validation hatasını (MAE) minimum yapan k<span class="mk"></span></button>
+      <button class="opt">Rastgele<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> En iyi k, validation MAE'yi minimum yapandır; sonra bu k ile test/yeni veri değerlendirilir.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✍️</span> Açık Uçlu Sorular</h3>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A1.</span>Soğutma pompası V1=(13,3) için ağırlıklı k-NN (w=1/d, k=3) tahminini ve mutlak hatasını hesaplayın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Mesafeler: d(T2)=1, d(T3)=1, d(T1)=√10=3.162 (en yakın 3). Ağırlıklar: w=1/d → 1, 1, 0.316. Hedefler: 115, 130, 100. Ağırlıklı ortalama: ŷ=(1·115+1·130+0.316·100)/(1+1+0.316)=(245+31.6)/2.316=276.6/2.316=<b>119.43</b>. Gerçek 125 → AE=|125−119.43|=<b>5.57</b>.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A2.</span>Neden ölçekleme parametreleri (min/max, μ/σ) yalnızca eğitim verisinden hesaplanmalıdır?</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      Çünkü validation/test, modelin <b>görmediği</b> veriyi temsil etmelidir. Ölçekleme parametreleri tüm veriden (veya testten) hesaplanırsa, test setine ait bilgi (örn. uç değerleri) ölçeklemeye karışır → <b>data leakage</b>. Bu, modeli gerçekte olduğundan daha iyi gösterir ve genelleme tahminini bozar. Doğru akış: parametreleri eğitimden hesapla, aynı parametrelerle val/test/yeni veriyi dönüştür.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A3.</span>Ağırlıklı k-NN regresyonda en iyi k'yi seçme ve modeli değerlendirme akışını sırayla anlatın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      (1) Tüm veriyi eğitim min/max (veya μ/σ) ile ölçekle. (2) Birkaç aday k dene (örn. k=2,3,5). (3) Her k için validation tahminlerini ağırlıklı ortalamayla üret ve <b>validation MAE</b> hesapla. (4) MAE'yi minimum yapan k'yi seç (örn. CNC'de k=2, motorda k=3). (5) Seçilen k ile <b>test</b> setinde RMSE ve <b>yeni veri</b>de APE hesaplayarak nihai performansı raporla. Model seçimi validation'a, nihai değerlendirme bağımsız test setine dayanır.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== WEEK 14 ===================== -->
+<section class="week" data-n="H14" id="week14">
+  <div class="week-head">
+    <div class="wnum">14</div>
+    <div class="htxt">
+      <h2>Decision Trees (Karar Ağaçları) <span class="wkscore" style="display:none;font-size:.7rem;font-weight:700;background:#e9f9ef;color:#15803d;padding:2px 9px;border-radius:20px;margin-left:8px;vertical-align:middle"></span></h2>
+      <p class="sub2">Gini · Entropy · Information Gain · overfitting önleme · ID3 (tam çözümlü)</p>
+    </div>
+    <div class="chev">›</div>
+  </div>
+  <div class="week-body">
+    <div class="tags"><span>Gini=1−Σpᵢ²</span><span>Entropy=−Σpᵢlog₂pᵢ</span><span>Information Gain</span><span>ID3</span><span>Pruning</span><span>Random Forest</span></div>
+
+    <h3 class="sec"><span class="ic">📘</span> Geniş Özet</h3>
+    <p class="lead"><b>Decision Tree</b> hem sınıflandırma hem regresyon için kullanılan, veriyi bir dizi karar kuralıyla bölen gözetimli bir algoritmadır. İnsan karar vermesine benzediği için <b>sezgisel ve yorumlanabilir</b>dir. Amaç, grupları olabildiğince <b>saf (pure)</b> hale getirmektir (her grup ağırlıkla tek sınıf).</p>
+
+    <h4 class="mini">Yapı &amp; çalışma</h4>
+    <p><b>Root node</b> (ilk karar) → <b>internal nodes</b> (ara kararlar) → <b>leaf nodes</b> (nihai tahmin); <b>branch</b> = bir kararın sonucu (Evet/Hayır). Algoritma: en iyi ayıran özelliği seç (en yüksek Information Gain / en düşük impurity) → böl → her alt grupta tekrarla. Durma: düğüm saf, max derinlik, yetersiz örnek veya anlamlı iyileşme kalmaması.</p>
+
+    <div class="callout formula">
+      <b>Gini impurity:</b> Gini = 1 − Σ pᵢ² &nbsp;(düşük = saf)<br>
+      <b>Entropy:</b> H = − Σ pᵢ·log₂(pᵢ) &nbsp;(0 = tamamen saf, yüksek = karışık)<br>
+      <b>Information Gain:</b> IG = Eski Entropy − (ağırlıklı) Yeni Entropy → <b>en yüksek IG'li özellik seçilir</b>
+    </div>
+    <div class="callout key"><span class="lbl">Örnek hesaplar</span>
+    3 "Pass" + 1 "Fail" düğüm: Gini = 1 − (¾² + ¼²) = 1 − (0.5625+0.0625) = <b>0.375</b>.<br>
+    2 Pass + 2 Fail: Entropy = −(½log₂½ + ½log₂½) = <b>1</b> (maksimum karışıklık). Saf [P,P,P,P] → Entropy = 0.<br>
+    <b>Gini vs Entropy:</b> Gini hesaplama olarak hızlı (sklearn varsayılanı); Entropy bilgi-teorisi temelli (IG ile birlikte). Pratikte benzer sonuç verirler.</div>
+
+    <div class="callout trap"><span class="lbl">⚠️ Karar ağaçlarının en büyük zaafı: Overfitting</span>
+    Eğitim %100, test %65 → ezber. <b>Karar sınırı eksen-hizalı (axis-aligned)</b>, nonlineer ama keskin/parçalı olabilir. Önleme yöntemleri: <b>max_depth</b>, <b>min_samples_split</b>, <b>min_samples_leaf</b>, <b>pruning</b> (pre-pruning/early stopping &amp; post-pruning / cost-complexity: Error + α·Karmaşıklık, ccp_alpha), <b>max_leaf_nodes</b>, <b>feature selection</b> (alakasız özellik çıkar), <b>daha çok veri</b>, ve <b>ensemble</b> (Random Forest, Gradient Boosting: XGBoost/LightGBM/CatBoost).</div>
+
+    <h3 class="sec"><span class="ic">🧮</span> Çözümlü Örnek — ID3 (Entropy + Information Gain)</h3>
+    <div class="ex">
+      <span class="extitle">🛒 "Müşteri ürünü alır mı?" · 10 örnek (6 Yes, 4 No)</span>
+      <div class="step"><span class="sh">(a) Veri kümesinin entropisi</span>
+      p(Yes)=6/10=0.6, p(No)=0.4 → H(S) = −0.6·log₂0.6 − 0.4·log₂0.4 = 0.442 + 0.529 = <b>0.971</b></div>
+      <div class="step"><span class="sh">(b) Age Group için Information Gain</span>
+      Young (4 örn: 1Y,3N): H = −¼log₂¼ − ¾log₂¾ = <b>0.811</b><br>
+      Middle (2 örn: 2Y,0N): saf → H = <b>0</b><br>
+      Old (4 örn: 3Y,1N): H = <b>0.811</b><br>
+      Ağırlıklı entropy = (4/10)(0.811) + (2/10)(0) + (4/10)(0.811) = 0.3244+0+0.3244 = <b>0.6488</b><br>
+      IG(Age) = 0.971 − 0.6488 = <b>0.322</b></div>
+      <div class="step"><span class="sh">(c) Diğer özellikler &amp; karar</span>
+      <table class="tbl">
+        <tr><th>Özellik</th><th>Ayrım Sonrası Entropy</th><th>Information Gain</th></tr>
+        <tr class="hl"><td>Age Group</td><td>0.649</td><td><b>0.322</b> ✅</td></tr>
+        <tr><td>Student</td><td>0.847</td><td>0.125</td></tr>
+        <tr><td>Income</td><td>0.875</td><td>0.096</td></tr>
+      </table>
+      En yüksek IG → <b>Age Group en iyi ilk ayrım (root)</b>'tır. Ardından Student, sonra Income kullanılır.</div>
+      <div class="res">📌 Hedef: her ayrımla entropiyi (belirsizliği) adım adım azaltıp yaprakları saflaştırmak (entropy→0). En iyi özellik = ayrım sonrası entropisi en düşük / IG'si en yüksek olan.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✅</span> Çoktan Seçmeli Sorular</h3>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S1.</span>Gini impurity formülü nedir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">Gini = Σpᵢ²<span class="mk"></span></button>
+      <button class="opt">Gini = 1 − Σpᵢ²<span class="mk"></span></button>
+      <button class="opt">Gini = −Σpᵢlog₂pᵢ<span class="mk"></span></button>
+      <button class="opt">Gini = 1 − Σpᵢ<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> Gini = 1 − Σpᵢ². (−Σpᵢlog₂pᵢ entropidir.)</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S2.</span>3 "Pass", 1 "Fail" içeren düğümün Gini değeri kaçtır?<span class="diff d2">Orta</span></p>
+      <button class="opt">0.5<span class="mk"></span></button>
+      <button class="opt">0.25<span class="mk"></span></button>
+      <button class="opt">0.375<span class="mk"></span></button>
+      <button class="opt">0.75<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> 1−(0.75²+0.25²)=1−(0.5625+0.0625)=1−0.625=0.375.</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S3.</span>Tamamen saf bir düğümün (hepsi aynı sınıf) entropisi nedir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">0<span class="mk"></span></button>
+      <button class="opt">1<span class="mk"></span></button>
+      <button class="opt">0.5<span class="mk"></span></button>
+      <button class="opt">Sonsuz<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> Saf düğüm → belirsizlik yok → Entropy=0. 50-50 karışık ise Entropy=1 (maksimum).</div>
+    </div>
+
+    <div class="mcq" data-correct="3">
+      <p class="q"><span class="qn">S4.</span>ID3 algoritması bir düğümde hangi özelliği ayrım için seçer?<span class="diff d2">Orta</span></p>
+      <button class="opt">En düşük Information Gain'li<span class="mk"></span></button>
+      <button class="opt">En yüksek entropili<span class="mk"></span></button>
+      <button class="opt">Rastgele bir özellik<span class="mk"></span></button>
+      <button class="opt">En yüksek Information Gain'li (ayrım sonrası entropisi en düşük)<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: D.</b> IG = eski entropy − ayrım sonrası ağırlıklı entropy; en yüksek IG en çok belirsizlik azaltan özelliktir.</div>
+    </div>
+
+    <div class="mcq" data-correct="0">
+      <p class="q"><span class="qn">S5.</span>Örnekte (Age IG=0.322, Student IG=0.125, Income IG=0.096) en iyi ilk ayrım hangisidir?<span class="diff d1">Kolay</span></p>
+      <button class="opt">Age Group<span class="mk"></span></button>
+      <button class="opt">Student<span class="mk"></span></button>
+      <button class="opt">Income<span class="mk"></span></button>
+      <button class="opt">Üçü de eşit<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: A.</b> En yüksek IG (0.322) Age Group'a aittir → root düğüm.</div>
+    </div>
+
+    <div class="mcq" data-correct="2">
+      <p class="q"><span class="qn">S6.</span>Aşağıdakilerden hangisi karar ağacında overfitting'i <b>önleme</b> yöntemi <b>değildir</b>?<span class="diff d2">Orta</span></p>
+      <button class="opt">max_depth ile derinliği sınırlamak<span class="mk"></span></button>
+      <button class="opt">Pruning (budama)<span class="mk"></span></button>
+      <button class="opt">Ağacı sınırsız büyütüp her yaprakta tek örnek bırakmak<span class="mk"></span></button>
+      <button class="opt">min_samples_leaf'i artırmak<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: C.</b> Her yaprakta tek örnek = ezber = overfitting'i <i>artırır</i>. Diğerleri önleme yöntemidir.</div>
+    </div>
+
+    <div class="mcq" data-correct="1">
+      <p class="q"><span class="qn">S7.</span>Karar ağaçlarının ürettiği karar sınırları nasıldır?<span class="diff d3">Zor</span></p>
+      <button class="opt">Her zaman düz tek bir doğru<span class="mk"></span></button>
+      <button class="opt">Eksen-hizalı (axis-aligned), nonlineer ama keskin/parçalı olabilen<span class="mk"></span></button>
+      <button class="opt">Daima dairesel<span class="mk"></span></button>
+      <button class="opt">Sürekli ve pürüzsüz eğriler<span class="mk"></span></button>
+      <div class="explain"><b>Doğru: B.</b> Ağaçlar özellik uzayını eksenlere paralel eşiklerle böler; nonlineer ilişki öğrenebilir ama sınırlar keskin/parçalı görünür.</div>
+    </div>
+
+    <h3 class="sec"><span class="ic">✍️</span> Açık Uçlu Sorular</h3>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A1.</span>6 Yes, 4 No içeren bir veri kümesinin entropisini hesaplayın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      p(Yes)=6/10=0.6, p(No)=4/10=0.4. H(S) = −0.6·log₂(0.6) − 0.4·log₂(0.4) = −0.6·(−0.737) − 0.4·(−1.322) = 0.442 + 0.529 = <b>0.971</b>. (1'e yakın → veri oldukça karışık/belirsiz.)</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A2.</span>Information Gain nedir ve "Age Group" örnekte neden en iyi ilk ayrımdır? Adımları gösterin.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      IG = ayrımdan önceki entropy − ayrımdan sonraki ağırlıklı entropy; ayrımın belirsizliği ne kadar azalttığını ölçer. Age Group için: Young (E=0.811), Middle (saf, E=0), Old (E=0.811). Ağırlıklı entropy = 0.4·0.811 + 0.2·0 + 0.4·0.811 = 0.6488. IG = 0.971 − 0.6488 = <b>0.322</b>. Student (0.125) ve Income (0.096) ile karşılaştırıldığında Age Group <b>en yüksek IG</b>'ye sahiptir → en çok saflaştıran özellik → root.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A3.</span>Karar ağacında overfitting'i önlemek için en az 5 yöntem sayın ve mantığını kısaca açıklayın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      <b>(1) max_depth:</b> derinliği sınırlar → daha basit, daha genel model. <b>(2) min_samples_split:</b> bir düğümün bölünmesi için min örnek → küçük (gürültülü) gruplarda bölmeyi engeller. <b>(3) min_samples_leaf:</b> yaprakta min örnek → tek-örnek ezberini önler. <b>(4) Pruning:</b> gereksiz dalları budar (pre-pruning erken durdurur; post-pruning/cost-complexity ccp_alpha tam büyümüş ağaçtan dal çıkarır). <b>(5) max_leaf_nodes:</b> yaprak sayısını sınırlar → daha geniş, genel bölgeler. Ek: alakasız özellikleri çıkarmak (feature selection), daha fazla veri, ve ensemble (Random Forest / Gradient Boosting) varyansı düşürür.</div>
+    </div>
+
+    <div class="oeq">
+      <p class="q"><span class="qn">A4.</span>Gini ile Entropy arasındaki farkı ve benzerliği açıklayın.</p>
+      <button class="reveal">Cevabı Göster</button>
+      <div class="answer"><span class="atag">Model Cevap</span>
+      İkisi de düğüm <b>impurity</b>'sini (karışıklığını) ölçer ve ayrım kalitesini değerlendirmede kullanılır. <b>Gini = 1−Σpᵢ²</b>: hesaplama olarak hızlıdır, scikit-learn'de varsayılan kriterdir, pratikte yaygındır. <b>Entropy = −Σpᵢlog₂pᵢ</b>: bilgi-teorisi temellidir, Information Gain ile birlikte kullanılır, akademik açıklamalarda daha sık geçer. Pratikte ürettikleri ağaçlar genelde çok benzerdir.</div>
+    </div>
+  </div>
+</section>
+
+  <!--WEEKS_HERE-->
+
+  <footer>
+    ENG3040 Makine Öğrenmesi çalışma rehberi · Slaytlardan birebir çıkarılan içerikle hazırlandı.<br>
+    Başarılar Akif! 🎯 İlerleme bu sayfada tutulur; sayfayı yenilersen sıfırlanır.
+  </footer>
+</div>
+
+<button id="top" title="Başa dön">↑</button>
+
+<script>
+document.addEventListener('DOMContentLoaded',function(){
+  /* ---- Collapsible weeks ---- */
+  document.querySelectorAll('.week-head').forEach(function(h){
+    h.addEventListener('click',function(){ h.parentElement.classList.toggle('open'); });
+  });
+
+  /* ---- Build TOC ---- */
+  var toc=document.getElementById('toc');
+  document.querySelectorAll('.week').forEach(function(w){
+    var n=w.getAttribute('data-n'); var a=document.createElement('a');
+    a.href='#'+w.id; a.textContent=n; toc.appendChild(a);
+    a.addEventListener('click',function(e){ w.classList.add('open'); });
+  });
+
+  /* ---- Stats ---- */
+  var allMcq=document.querySelectorAll('.mcq');
+  var allOeq=document.querySelectorAll('.oeq');
+  document.getElementById('totMcq').textContent=allMcq.length;
+  document.getElementById('totOeq').textContent=allOeq.length;
+  var total=allMcq.length, answered=0, correct=0;
+
+  function updateProgress(){
+    var pct= total? Math.round(answered/total*100):0;
+    document.getElementById('fill').style.width=pct+'%';
+    var el=document.getElementById('pscore');
+    if(answered===0){ el.innerHTML='<span class="muted">Henüz başlamadın · '+total+' soru</span>'; }
+    else{ el.innerHTML='<span class="ok">'+correct+' doğru</span> / '+answered+' cevaplandı &nbsp;·&nbsp; <span class="muted">%'+pct+' tamamlandı</span>'; }
+  }
+  updateProgress();
+
+  /* ---- MCQ logic ---- */
+  allMcq.forEach(function(q){
+    var correctIdx=parseInt(q.getAttribute('data-correct'),10);
+    var opts=q.querySelectorAll('.opt');
+    var exp=q.querySelector('.explain');
+    opts.forEach(function(opt,i){
+      opt.addEventListener('click',function(){
+        if(q.classList.contains('done')) return;
+        q.classList.add('done');
+        answered++;
+        opts.forEach(function(o){o.classList.add('lock');});
+        if(i===correctIdx){ opt.classList.add('correct'); opt.querySelector('.mk').textContent='✓'; correct++; }
+        else{
+          opt.classList.add('wrong'); opt.querySelector('.mk').textContent='✗';
+          opts[correctIdx].classList.add('correct'); opts[correctIdx].querySelector('.mk').textContent='✓';
+        }
+        if(exp) exp.classList.add('show');
+        updateProgress();
+        updateWeek(q);
+      });
+    });
+  });
+
+  /* ---- per-week mini score (correct / answered) ---- */
+  function updateWeek(node){
+    var wk=node.closest('.week'); if(!wk) return;
+    var mcqs=wk.querySelectorAll('.mcq');
+    var badge=wk.querySelector('.wkscore');
+    if(!badge) return;
+    var answeredW=0, correctW=0;
+    mcqs.forEach(function(m){
+      if(m.classList.contains('done')){
+        answeredW++;
+        if(!m.querySelector('.opt.wrong')) correctW++; // doğruysa hiç .wrong yok
+      }
+    });
+    badge.textContent=correctW+'/'+answeredW+' doğru';
+    badge.style.display=answeredW>0?'inline-block':'none';
+  }
+
+  /* ---- Open-ended reveal ---- */
+  allOeq.forEach(function(q){
+    var btn=q.querySelector('.reveal'); var ans=q.querySelector('.answer');
+    btn.addEventListener('click',function(){
+      ans.classList.toggle('show');
+      btn.textContent=ans.classList.contains('show')?'Cevabı Gizle':'Cevabı Göster';
+    });
+  });
+
+  /* ---- toolbar ---- */
+  document.getElementById('expandAll').addEventListener('click',function(){
+    document.querySelectorAll('.week').forEach(function(w){w.classList.add('open');});
+  });
+  document.getElementById('collapseAll').addEventListener('click',function(){
+    document.querySelectorAll('.week').forEach(function(w){w.classList.remove('open');});
+  });
+  document.getElementById('resetQ').addEventListener('click',function(){
+    if(!confirm('Tüm soru cevapların sıfırlansın mı?')) return;
+    location.reload();
+  });
+
+  /* ---- back to top ---- */
+  var topBtn=document.getElementById('top');
+  window.addEventListener('scroll',function(){
+    if(window.scrollY>500) topBtn.classList.add('show'); else topBtn.classList.remove('show');
+  });
+  topBtn.addEventListener('click',function(){window.scrollTo({top:0,behavior:'smooth'});});
+
+  /* open first week by default */
+  var first=document.querySelector('.week'); if(first) first.classList.add('open');
+});
+</script>
+</body>
+</html>
